@@ -1,5 +1,5 @@
 package main;
 
-public class Client {
+public class GUI {
     
 }
