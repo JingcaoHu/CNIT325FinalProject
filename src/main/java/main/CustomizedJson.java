@@ -1,5 +1,6 @@
 package main;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class CustomizedJson {
@@ -42,13 +43,18 @@ public class CustomizedJson {
         JsonObject input= new JsonObject();
         input.addProperty("model", model);
 
-        JsonObject messageObj = new JsonObject();
-        messageObj.addProperty("role", "system");
-        messageObj.addProperty("content", sysContent);
-        messageObj.addProperty("role", "user");
-        messageObj.addProperty("content", userContent);
+        JsonArray messagesArray = new JsonArray();
+        JsonObject systemMessage = new JsonObject();
+        systemMessage.addProperty("role", "system");
+        systemMessage.addProperty("content", sysContent);
+        messagesArray.add(systemMessage);
 
-        input.add("messages",messageObj);
+        JsonObject userMessage = new JsonObject();
+        userMessage.addProperty("role", "user");
+        userMessage.addProperty("content", userContent);
+        messagesArray.add(userMessage);
+
+        input.add("messages",messagesArray);
         input.addProperty("temperature", 0.7);
         input.addProperty("max_tokens", -1);
         input.addProperty("stream", false);
@@ -56,10 +62,10 @@ public class CustomizedJson {
         return gson.toJson(input);
     }
 
-    public static void main(String[] args) {
-        String testCode = "12345u3903u099234ikelfnjgolse";
-        CustomizedJson debug = new CustomizedJson("deepseek-r1-distill-qwen-7b", "You are an experienced programmer, please find the bugs in the provided code and return a fixed code. Please output updated code only, all explanations should be included in the format of code comments", testCode);
+    /*public static void main(String[] args) {
+        String testCode = "Some Test Code Here!";
+        CustomizedJson debug = new CustomizedJson("deepseek-r1-distill-qwen-7b", "You are a helpful assistant, please answer questions from user", testCode);
         String input = debug.CreateCustomJson();
         System.out.println(input);
-    }
+    }*/
 }

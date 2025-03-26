@@ -2,14 +2,16 @@ package main;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class AIConnection {
     
-    public String runAIConnection(String AIInput){
-    try {
+    public String runConnection(String AIInput, String address){
+        String response = "Error occured, please check code.";
+        try {
             // Set up the endpoint URL
-            URL url = new URL("http://localhost:1234/v1/chat/completions");
+            URL url = new URL(address);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             // Set request method and headers
@@ -18,7 +20,10 @@ public class AIConnection {
             conn.setDoOutput(true);
 
             // JSON payload
-            String jsonInputString = """
+            
+            CustomizedJson cJson = new CustomizedJson("deepseek-r1-distill-qwen-7b", "You are a helpful assistant, please answer the question:", AIInput);
+            String jsonInputString = cJson.CreateCustomJson();
+            /*String jsonInputString = """
             {
               "model": "deepseek-r1-distill-qwen-7b",
               "messages": [
@@ -29,7 +34,7 @@ public class AIConnection {
               "max_tokens": -1,
               "stream": false
             }
-            """;
+            """;*/
 
             // Send the JSON input
             try (OutputStream os = conn.getOutputStream()) {
@@ -42,7 +47,7 @@ public class AIConnection {
             System.out.println("HTTP Status Code: " + status);
 
             try (var reader = new java.util.Scanner(conn.getInputStream(), StandardCharsets.UTF_8)) {
-                String response = reader.useDelimiter("\\A").next();
+                response = reader.useDelimiter("\\A").next();
                 System.out.println("Response: " + response);
             }
 
@@ -51,5 +56,6 @@ public class AIConnection {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return response;
     }
 }
