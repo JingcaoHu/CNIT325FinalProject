@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+pre {
+  margin: 0;
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Add any additional global styles here */
