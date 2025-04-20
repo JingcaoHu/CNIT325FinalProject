@@ -70,7 +70,6 @@ public class Server{
                     String result = parts1[0].trim();
                     result = result.substring(0, result.length()-1);
 
-                    p
                     //在以下部分需要加入JDBC，使用Prompt对象的UID和时间戳保存问题和答复到数据库
                     //to do code here
 
