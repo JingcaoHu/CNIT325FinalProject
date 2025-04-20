@@ -46,8 +46,8 @@ public class Testcode {
     }
 
     public static void main(String[] args) {
-        int[] input = {3,2,1,5,6,4};
-        int k = 2;
+        int[] input = {99,99};
+        int k = 1;
         Testcode test = new Testcode();
         int result = test.findKthLargest(input, k);
         System.out.println(result);
