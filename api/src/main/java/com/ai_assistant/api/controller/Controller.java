@@ -1,5 +1,20 @@
 package com.ai_assistant.api.controller;
 
+import com.ai_assistant.api.model.AIConnection;
+import com.ai_assistant.api.model.Prompt;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("api")
 public class Controller {
-    // Hi this is a merge conflict example comptuer #2;
+    AIConnection connection = new AIConnection();
+
+    @PostMapping("/request")
+    public String request(@RequestBody Prompt prompt) {
+        return connection.runConnection(prompt.getSelection(), prompt.getContent(), "http://localhost:1234/v1/chat/completions");
+    }
 }
