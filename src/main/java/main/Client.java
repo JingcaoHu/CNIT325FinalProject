@@ -56,7 +56,7 @@ public class Client
     {
         Client c1 = new Client(0,null);
         String question = "Where is the capital of England?";
-        Prompt prompt = new Prompt(0, 0, question, null); //Selection 0:Code suggestion || 1:Code solution
+        Prompt prompt = new Prompt(0, 3, question, null); //Selection 0:Code suggestion || 1:Code solution
         
         String result = c1.runConnection(8189, "127.0.0.1", prompt);
         System.out.println(result);

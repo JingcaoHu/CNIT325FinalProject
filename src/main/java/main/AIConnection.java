@@ -7,7 +7,35 @@ import java.nio.charset.StandardCharsets;
 
 public class AIConnection {
     
-    public String runConnection(String AIInput, String address){
+    public String getSelection(int selectionInt){
+        switch (selectionInt) {
+            case 0:
+                return "You are a helpful and experienced assistant in programming. " +
+                        "Here is a snippet of code from a programmer who needs your help, " +
+                        "please find out all existing code issues and room for improvement " +
+                        "and give suggestions of how to resolve the issues and improve the code. " +
+                        "The suggestion could include what could go wrong in the current code, " +
+                        "what logic can be used instead of the existing one in the code, " +
+                        "and what methods/functions/data structures can be used for better efficiency." +
+                        "Note that you are required to only give suggestions to help the user improve " +
+                        "DO NOT provide any direct answer!";
+            case 1:
+                return "You are a helpful and experienced assistant in programming. " +
+                        "Here is a snippet of code from a human programmer who needs your help. " +
+                        "Please identify the problem he is trying to solve with the provided code " +
+                        "and give direct code solution. You are required to only return revised code." +
+                        "Please DO NOT return anything other than revised code " +
+                        "so that the returned code can be executed directly. " +
+                        "To explain the changes, you can use comment syntax between the code.";
+            case 3:
+                return "You are a helpful assistant on daily routine topics. "+
+                        "Please answer questions from user in a short paragraph.";
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    public String runConnection(int selection, String AIInput, String address){
         String response = "Error occured, please check code.";
         try {
             // Set up the endpoint URL
@@ -21,7 +49,7 @@ public class AIConnection {
 
             // JSON payload
             
-            CustomizedJson cJson = new CustomizedJson("deepseek-r1-distill-qwen-7b", "You are a helpful assistant, please answer the question:", AIInput);
+            CustomizedJson cJson = new CustomizedJson("deepseek-r1-distill-qwen-7b", getSelection(selection), AIInput);
             String jsonInputString = cJson.CreateCustomJson();
 
             // Send the JSON input

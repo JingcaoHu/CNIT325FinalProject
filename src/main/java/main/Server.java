@@ -59,14 +59,21 @@ public class Server{
 
                     AIConnection toAI = new AIConnection();
                     //StringBuilder AIOutput = new StringBuilder();
+                    
+                    //把Prompt内容发送给AI并返回结果
+                    String response = toAI.runConnection(prompt.selection, prompt.content, address);
 
-                    String response = toAI.runConnection(prompt.content, address);
-
+                    //处理AI返回的信息，裁剪到只包含答案
                     String[] parts = response.split("</think>");
                     String tempResult = parts[1];
                     String[] parts1 = tempResult.split("}");
                     String result = parts1[0].trim();
                     result = result.substring(0, result.length()-1);
+
+                    p
+                    //在以下部分需要加入JDBC，使用Prompt对象的UID和时间戳保存问题和答复到数据库
+                    //to do code here
+
 
                     //以下是返回给客户端的信息
                     output.println(result);
