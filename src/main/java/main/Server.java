@@ -44,19 +44,32 @@ public class Server{
                     Scanner input = new Scanner(inStream);
                     PrintWriter output = new PrintWriter(outStreamToClient, true);
 
-                    StringBuilder AIInput = new StringBuilder();
-                    System.out.println("Next into while loop");
-                    while (input.hasNextLine()){
-                        String thisLine = input.nextLine();
-                        AIInput.append(thisLine);
-                    }
-                    System.out.println("Out of while loop");
-                    System.out.println(AIInput.toString());
+                    String inputStr = input.nextLine();
+                    Prompt prompt = parsePrompt(inputStr);
+
+                    // StringBuilder AIInput = new StringBuilder();
+                    // while (input.hasNextLine()){
+                    //     String thisLine = input.nextLine();
+                    //     if (thisLine.trim().equals("END_OF_MESSAGE")){
+                    //         break;
+                    //     }
+                    //     AIInput.append(thisLine);
+                    // }
+                    // System.out.println(AIInput.toString());
+
                     AIConnection toAI = new AIConnection();
-                    String response = toAI.runConnection(AIInput.toString(), address);
+                    //StringBuilder AIOutput = new StringBuilder();
+
+                    String response = toAI.runConnection(prompt.content, address);
+
+                    String[] parts = response.split("</think>");
+                    String tempResult = parts[1];
+                    String[] parts1 = tempResult.split("}");
+                    String result = parts1[0].trim();
+                    result = result.substring(0, result.length()-1);
 
                     //以下是返回给客户端的信息
-                    output.println(response);
+                    output.println(result);
                     System.out.println("Transaction completed.");
                 }
                 finally{
@@ -67,6 +80,45 @@ public class Server{
             e.printStackTrace();
         }
         
+    }
+
+    //Helper function to parse serialized Prompt object
+    //Serialized formate: UID<DELIMITER>selection<DELIMITER>content<DELIMITER>response<DELIMITER>timeStamp
+    public Prompt parsePrompt(String str){
+        String[] parts = str.split("<DELIMITER>");
+        int UID = Integer.parseInt(parts[0]);
+        int selection = Integer.parseInt(parts[1]);
+        Prompt prompt = new Prompt(UID, selection, parts[2], parts[3]);
+        prompt.setTimeStamp(getTimeStamp());
+        return prompt;
+    }
+
+    //Helper function to get timestamp
+    public String getTimeStamp(){
+        String timeStamp = "Time Stamp Not Available";
+        String tempTimeStamp = "";
+        try{
+            Socket s = new Socket("time-A.timefreq.bldrdoc.gov", 13);
+            try{
+                InputStream inStream = s.getInputStream();
+                Scanner in = new Scanner(inStream);
+                
+                while(in.hasNextLine()){
+                    tempTimeStamp = in.nextLine();
+                }
+                String[] parts = tempTimeStamp.split(" ");
+                if (parts.length >= 3){
+                    timeStamp = parts[1] + " " + parts[2];
+                }
+            }
+            finally{
+                s.close();
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return timeStamp;
     }
 
     public static void main(String[] args) {

@@ -23,18 +23,6 @@ public class AIConnection {
             
             CustomizedJson cJson = new CustomizedJson("deepseek-r1-distill-qwen-7b", "You are a helpful assistant, please answer the question:", AIInput);
             String jsonInputString = cJson.CreateCustomJson();
-            /*String jsonInputString = """
-            {
-              "model": "deepseek-r1-distill-qwen-7b",
-              "messages": [
-                { "role": "system", "content": "Always answer in rhymes. Today is Thursday" },
-                { "role": "user", "content": "What day is it today?" }
-              ],
-              "temperature": 0.7,
-              "max_tokens": -1,
-              "stream": false
-            }
-            """;*/
 
             // Send the JSON input
             try (OutputStream os = conn.getOutputStream()) {

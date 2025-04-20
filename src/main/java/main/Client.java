@@ -6,36 +6,60 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client
+public class Client 
 {
-    public static void main(String [] args)
-    {
+    int clientID;
+    String password;
+
+    public Client(int clientID, String password){
+        this.clientID = clientID;
+        this.password = password;
+    }
+
+
+
+
+    //@Override
+    public String runConnection(int port, String address, Prompt passedInfo){
+        StringBuilder sb = new StringBuilder();
         try
         {
-            Socket s = new Socket("127.0.0.1", 8189);
+            Socket s = new Socket(address, port);
             try
             {
                 InputStream inStream = s.getInputStream();
                 Scanner in = new Scanner(inStream);
                 OutputStream outStream = s.getOutputStream();
                 PrintWriter out = new PrintWriter(outStream,true);
-                System.out.println("Client Connected to Server.");
-                out.println("Where is the capital of France? Please return the answer with an 'EOF' in the end.");
-                s.close();
-                while(in.hasNextLine())
+                System.out.println("Client Connected to Server. Passed question: " + passedInfo.toString());
+                out.println(passedInfo.toString());
+                out.println("END_OF_MESSAGE");
+                sb = new StringBuilder();
+                while (in.hasNextLine())
                 {       
-                    System.out.println("Client Listen: " + in.nextLine());
+                    sb.append(in.nextLine());
                 }
             }
             finally
             {
-                
+                s.close();
+                //in.close();
             }
         }
         catch(IOException ioexc)
         {
             ioexc.printStackTrace();
         }
-} //end public
+        return sb.toString();
+    }
+    public static void main(String [] args)
+    {
+        Client c1 = new Client(0,null);
+        String question = "Where is the capital of England?";
+        Prompt prompt = new Prompt(0, 0, question, null); //Selection 0:Code suggestion || 1:Code solution
+        
+        String result = c1.runConnection(8189, "127.0.0.1", prompt);
+        System.out.println(result);
+    } //end public
 } //end class
 
