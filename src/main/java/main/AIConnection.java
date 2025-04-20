@@ -6,7 +6,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class AIConnection {
-    
+    //
     public String getSelection(int selectionInt){
         switch (selectionInt) {
             case 0:
