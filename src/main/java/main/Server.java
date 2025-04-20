@@ -128,9 +128,8 @@ public class Server{
     }
 
     public static void main(String[] args) {
-        Server s1 = new Server(8189, "http://192.168.50.157:1234/v1/chat/completions");
-        s1.runConnection(8189, "http://192.168.50.157:1234/v1/chat/completions");
+        Server s1 = new Server(8189, "http://localhost:1234/v1/chat/completions");
+        s1.runConnection(8189, "http://localhost:1234/v1/chat/completions");
     }
-
 }
 

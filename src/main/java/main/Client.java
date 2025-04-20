@@ -16,9 +16,6 @@ public class Client
         this.password = password;
     }
 
-
-
-
     //@Override
     public String runConnection(int port, String address, Prompt passedInfo){
         StringBuilder sb = new StringBuilder();
@@ -55,7 +52,7 @@ public class Client
     public static void main(String [] args)
     {
         Client c1 = new Client(0,null);
-        String question = "Where is the capital of England?";
+        String question = "What is the capital of France";
         Prompt prompt = new Prompt(0, 3, question, null); //Selection 0:Code suggestion || 1:Code solution
         
         String result = c1.runConnection(8189, "127.0.0.1", prompt);
