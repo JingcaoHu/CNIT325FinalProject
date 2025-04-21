@@ -6,17 +6,24 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client 
+public class Client implements ConnectionHandler
 {
     int clientID;
-    String password;
 
     public Client(int clientID, String password){
         this.clientID = clientID;
-        this.password = password;
     }
 
-    //@Override
+    //Getter
+    public int getUID(){
+        return clientID;
+    }
+    //Setter
+    public void setUID(int UID){
+        this.clientID = UID;
+    }
+
+    @Override
     public String runConnection(int port, String address, Prompt passedInfo){
         StringBuilder sb = new StringBuilder();
         try
@@ -52,8 +59,10 @@ public class Client
     public static void main(String [] args)
     {
         Client c1 = new Client(0,null);
-        String question = "What is the capital of France";
-        Prompt prompt = new Prompt(0, 3, question, null); //Selection 0:Code suggestion || 1:Code solution
+        FileExtractor file1 = new FileExtractor("/Users/huanfuli/CNIT325FinalProject/api/src/main/java/com/ai_assistant/api/model/Testcode.java");
+
+        String question = file1.getContent();
+        Prompt prompt = new Prompt(0, 1, question, null); //Selection 0:Code suggestion || 1:Code solution
         
         String result = c1.runConnection(8189, "127.0.0.1", prompt);
         System.out.println(result);

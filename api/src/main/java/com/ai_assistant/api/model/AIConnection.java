@@ -23,7 +23,7 @@ public class AIConnection {
                 return "You are a helpful and experienced assistant in programming. " +
                         "Here is a snippet of code from a human programmer who needs your help. " +
                         "Please identify the problem he is trying to solve with the provided code " +
-                        "and give direct code solution. You are required to only return revised code." +
+                        "and create code solution. You are required to only return revised code." +
                         "Please DO NOT return anything other than revised code " +
                         "so that the returned code can be executed directly. " +
                         "To explain the changes, you can use comment syntax between the code.";
@@ -37,6 +37,7 @@ public class AIConnection {
 
     public String runConnection(int selection, String AIInput, String address){
         String response = "Error occured, please check code.";
+        String result = "Error: Cannot generate response";
         try {
             // Set up the endpoint URL
             URL url = new URL(address);
@@ -66,12 +67,18 @@ public class AIConnection {
                 response = reader.useDelimiter("\\A").next();
                 System.out.println("Response: " + response);
             }
+            //处理AI返回的信息，裁剪到只包含答案
+            String[] parts = response.split("</think>");
+            String tempResult = parts[1];
+            String[] parts1 = tempResult.split("}");
+            result = parts1[0].trim();
+            result = result.substring(0, result.length()-1);
 
             conn.disconnect();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return response;
+        return result;
     }
 }
