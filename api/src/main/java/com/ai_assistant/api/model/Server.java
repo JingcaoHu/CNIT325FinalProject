@@ -64,10 +64,11 @@ public class Server{
                     
                     //把Prompt内容发送给AI并返回结果
                     String response = toAI.runConnection(prompt.selection, prompt.content, address);
-
+                    prompt.setResponse(response);
 
                     //在以下部分需要加入JDBC，使用Prompt对象的UID和时间戳保存问题和答复到数据库
-                    //to do code here
+                    InsertRecord record = new InsertRecord();
+                    record.connectDatabase(prompt);
 
 
                     //以下是返回给客户端的信息
@@ -132,6 +133,10 @@ public class Server{
     }
 
     public static void main(String[] args) {
+        //Check and create the HISTORY table before server start
+        CreateTable table = new CreateTable();
+        table.connectDatabase(new Prompt(0, 0, null, null));
+
         Server s1 = new Server(8189, "http://localhost:1234/v1/chat/completions");
         s1.runConnection(8189, "http://localhost:1234/v1/chat/completions");
     }

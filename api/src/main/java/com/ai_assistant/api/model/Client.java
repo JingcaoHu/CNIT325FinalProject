@@ -65,7 +65,7 @@ public class Client implements ConnectionHandler
         // String question = file1.getContent();
 
         //调试2:发送简单问题
-        String question = "Where is the capital of China?";
+        String question = "When was the USA founded?";
 
         Prompt prompt = new Prompt(0, 3, question, null); //Selection 0:Code suggestion || 1:Code solution || 3:General question
         
