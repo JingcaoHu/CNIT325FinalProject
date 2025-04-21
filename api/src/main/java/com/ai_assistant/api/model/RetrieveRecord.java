@@ -5,16 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class DatabaseConnector implements ConnectionHandler{
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/ai_assistant_database";
-    private static final String USERNAME = "admin";
-    private static final String PASSWORD = "rootroot";
-
-
+public class RetrieveRecord extends DatabaseConnection implements ConnectionHandler{
+    Connection conn = null;
+    Statement statement = null;
+    
     @Override
     public String runConnection(int port, String address, Prompt passedInfo) {
-        Connection conn = null;
-        Statement statement = null;
+
         ResultSet resultSet = null;
 
         try {

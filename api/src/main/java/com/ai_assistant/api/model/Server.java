@@ -4,6 +4,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Server{
@@ -70,6 +72,7 @@ public class Server{
 
                     //以下是返回给客户端的信息
                     output.println(response);
+                    System.out.println(prompt.getTimeStamp());
                     System.out.println("Transaction completed.");
                 }
                 finally{
@@ -94,9 +97,11 @@ public class Server{
     }
 
     //Helper function to get timestamp
+    //Output format: 25-04-21 03:26:15
     public String getTimeStamp(){
         String timeStamp = "Time Stamp Not Available";
         String tempTimeStamp = "";
+        String mysqlDateTimeString = "";
         try{
             Socket s = new Socket("time-A.timefreq.bldrdoc.gov", 13);
             try{
@@ -110,6 +115,11 @@ public class Server{
                 if (parts.length >= 3){
                     timeStamp = parts[1] + " " + parts[2];
                 }
+                //Parse the output time string into MySQL DATETIME format of yyyy-MM-dd HH:mm:ss
+                DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss");
+                LocalDateTime localDateTime = LocalDateTime.parse(timeStamp, inputFormat);
+                DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                mysqlDateTimeString = localDateTime.format(outputFormatter);
             }
             finally{
                 s.close();
@@ -118,7 +128,7 @@ public class Server{
         catch(Exception e){
             e.printStackTrace();
         }
-        return timeStamp;
+        return mysqlDateTimeString;
     }
 
     public static void main(String[] args) {
