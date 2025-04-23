@@ -67,7 +67,8 @@ public class Client implements ConnectionHandler
         //调试2:发送简单问题
         String question = "When was the USA founded?";
 
-        Prompt prompt = new Prompt(0, 3, question, null); //Selection 0:Code suggestion || 1:Code solution || 3:General question
+        Prompt prompt = new Prompt(0, 3, question, null); 
+        //Selection 0:Code suggestion || 1:Code solution || 3:General question
         
         //Note: The following connection takes port and address of server
         String result = c1.runConnection(8189, "127.0.0.1", prompt);

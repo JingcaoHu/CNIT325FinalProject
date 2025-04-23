@@ -59,11 +59,11 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
     }
 
     //Test main
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        // Class.forName("com.mysql.jdbc.Driver").newInstance();
-        Prompt test = new Prompt(1, 1, null, null);
-        test.setTimeStamp("25-04-21 03:26:15");
-        CreateTable table = new CreateTable();
-        table.connectDatabase(test);
-    }
+    // public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    //     // Class.forName("com.mysql.jdbc.Driver").newInstance();
+    //     Prompt test = new Prompt(1, 1, null, null);
+    //     test.setTimeStamp("25-04-21 03:26:15");
+    //     CreateTable table = new CreateTable();
+    //     table.connectDatabase(test);
+    // }
 }

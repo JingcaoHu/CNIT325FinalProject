@@ -10,6 +10,22 @@ public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
     Connection conn = null;
     PreparedStatement statement = null;
     
+    public Connection getConn() {
+        return conn;
+    }
+
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+
+    public PreparedStatement getStatement() {
+        return statement;
+    }
+
+    public void setStatement(PreparedStatement statement) {
+        this.statement = statement;
+    }
+   
     public String getSelection(int selection){
         switch (selection){
             case 0:
@@ -76,12 +92,13 @@ public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
     }
     
     //Test main
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        // Class.forName("com.mysql.jdbc.Driver").newInstance();
-        Prompt test = new Prompt(1, 1, "test con", "test response");
-        test.setTimeStamp("25-04-21 03:26:15");
-        InsertRecord record = new InsertRecord();
-        record.connectDatabase(test);
-    }
-   
+    // public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    //     // Class.forName("com.mysql.jdbc.Driver").newInstance();
+    //     Prompt test = new Prompt(1, 1, "test con", "test response");
+    //     test.setTimeStamp("25-04-21 03:26:15");
+    //     InsertRecord record = new InsertRecord();
+    //     record.connectDatabase(test);
+    // }
+
+
 }
