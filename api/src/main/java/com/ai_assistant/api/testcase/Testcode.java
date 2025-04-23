@@ -1,4 +1,4 @@
-package com.ai_assistant.api.model;
+package com.ai_assistant.api.testcase;
 
 import java.util.ArrayList;
 import java.util.List;
