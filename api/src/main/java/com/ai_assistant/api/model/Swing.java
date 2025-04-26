@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class SwingGUI extends JFrame implements ActionListener{
+public class Swing extends JFrame implements ActionListener{
     JPanel pnlContain;
     JTextField txtInput, txtUID;
     JTextArea txtDisplay;
@@ -28,7 +28,7 @@ public class SwingGUI extends JFrame implements ActionListener{
     int port;
     String serverAddr;
 
-    public SwingGUI(){
+    public Swing(){
         Container cp = getContentPane();
         pnlContain = new JPanel();
 
@@ -102,7 +102,7 @@ public class SwingGUI extends JFrame implements ActionListener{
     }
     
     public static void main(String[] args) {
-        SwingGUI gui = new SwingGUI();
+        Swing gui = new Swing();
         gui.setSize(800,800);
         gui.setVisible(true);
     }

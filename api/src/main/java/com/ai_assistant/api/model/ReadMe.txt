@@ -9,6 +9,7 @@ Checklist:
     At lease 1 interface;                           OK
         ConnectionHandler, DatabaseHandler.
     2 External interface;                           OK
+        LM Studio, JDBC, React.
     Time class;                                     OK
         In Server: change time format.
     GUI;                                            WIP
