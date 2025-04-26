@@ -1,5 +1,8 @@
 package com.ai_assistant.api.model.SwingGUI;
 import javax.swing.*;
+
+import com.ai_assistant.api.model.Client;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,9 +52,15 @@ public class LoginPage extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 在这里添加登录逻辑
-                System.out.println("尝试登录: " + usernameField.getText() + ", " + new String(passwordField.getPassword()));
+                System.out.println("Login attempted: " + usernameField.getText() + ", " + new String(passwordField.getPassword()));
+                int UID = Integer.parseInt(usernameField.getText());
+
+                boolean authenticated = true;
+                if (authenticated){
+                    Client client = new Client(UID, new String(passwordField.getPassword()));
                 // 假设登录成功后切换到主面板
-                mainFrame.showCard("main");
+                    mainFrame.setClient(client);
+                }
             }
         });
         add(loginButton, gbc);

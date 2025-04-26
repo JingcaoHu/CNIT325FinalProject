@@ -1,16 +1,28 @@
 package com.ai_assistant.api.model.SwingGUI;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Page2 extends JPanel {
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+
+import com.ai_assistant.api.model.Client;
+import com.ai_assistant.api.model.Prompt;
+
+public class Page2 extends JPanel implements ClientHandler {
 
     private JTextArea inputTextArea;
     private JTextArea outputTextArea;
     private JComboBox<String> functionComboBox;
     private JButton sendButton;
+    private Client client;
 
     public Page2() {
         setLayout(new BorderLayout(5, 5));
@@ -36,16 +48,21 @@ public class Page2 extends JPanel {
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String input = inputTextArea.getText();
-                String selectedFunction = (String) functionComboBox.getSelectedItem();
+                int selectedFunction = functionComboBox.getSelectedIndex();
+                Prompt prompt = new Prompt(client.getUID(), selectedFunction, inputTextArea.getText(), null);
                 // 在这里处理发送请求的逻辑
-                String output = "您选择了 " + selectedFunction + " 功能，并输入了: \n" + input;
+                String output = client.runConnection(8189, "127.0.0.1", prompt);
                 outputTextArea.setText(output);
-                System.out.println("请求发送: " + output);
+                System.out.println("Request completed.");
             }
         });
         controlPanel.add(functionComboBox);
         controlPanel.add(sendButton);
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void setClient(Client client) {
+        this.client = client;
     }
 }

@@ -1,16 +1,21 @@
 package com.ai_assistant.api.model.SwingGUI;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainPanel extends JPanel {
+import javax.swing.JPanel;
+
+import com.ai_assistant.api.model.Client;
+
+public class MainPanel extends JPanel implements ClientHandler {
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
     private Map<String, Component> cards;
     private MainFrame mainFrame;
-
+    private Client client;
     private Page1 page1;
     private Page2 page2;
     private HistoryPage historyPage;
@@ -41,5 +46,13 @@ public class MainPanel extends JPanel {
 
     public void showPage(String pageName) {
         cardLayout.show(contentPanel, pageName);
+
+    }
+    
+    @Override
+    public void setClient(Client client){
+        this.client = client;
+        page1.setClient(client);
+        page2.setClient(client);
     }
 }

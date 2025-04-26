@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Client implements ConnectionHandler
 {
     int clientID;
+    String password;
 
     public Client(int clientID, String password){
         this.clientID = clientID;
