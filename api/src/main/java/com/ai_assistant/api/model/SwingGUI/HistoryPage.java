@@ -2,9 +2,13 @@ package com.ai_assistant.api.model.SwingGUI;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -15,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -35,39 +40,43 @@ public class HistoryPage extends JPanel implements ClientHandler {
     private Client client;
     Locale currentLocale;
     ResourceBundle bundle;
+    private RecordRetriever recordRetriever;
 
-    // 模拟历史记录数据
-    private final Object[][] historyData = {
-            {new Date(), "Hint", "input 1", "output 1"},
-            {new Date(), "Suggestion", "input 2", "output 2"},
-            {new Date(), "Debug", "input 3", "output 3"},
-            {new Date(), "Generic", "input 4", "output 4"}
-    };
-    private final String[] columnNames = {"日期", "功能", "用户输入", "程序输出"};
+    private final String[] columnNames = {"用户输入", "程序输出", "选择", "时间"};
 
     public HistoryPage(MainPanel panel) {
-        
         this.mainPanel = panel;
+        this.recordRetriever = new RecordRetriever();
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel filterLabel = new JLabel("按功能筛选:");
-        String[] functions = {bundle.getString("selection1"), bundle.getString("selection2"), bundle.getString("selection3"), bundle.getString("selection4"), bundle.getString("selection5")};
+        String[] functions = {"All", "Hint", "Suggestion", "Debug", "Generic"};
         functionFilterComboBox = new JComboBox<>(functions);
         filterPanel.add(filterLabel);
         filterPanel.add(functionFilterComboBox);
         add(filterPanel, BorderLayout.NORTH);
 
-        tableModel = new DefaultTableModel(historyData, columnNames);
+        tableModel = new DefaultTableModel(null, columnNames);
         historyTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(historyTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        //Get HISTORY table data to display
-        RecordRetriever record = new RecordRetriever();
-        ResultSet rs = record.getTable(client.getUID(), functionFilterComboBox.getSelectedIndex());
-        
+        // 注意：初始化时不加载数据，等待 client 被设置
+
+        // 监听功能筛选下拉框的事件
+        functionFilterComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 只有当 client 不为 null 时才加载数据
+                if (client != null) {
+                    int selectedFunction = functionFilterComboBox.getSelectedIndex();
+                    loadHistoryData(selectedFunction);
+                }
+            }
+        });
+
         // 双击表格行事件
         historyTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -75,8 +84,8 @@ public class HistoryPage extends JPanel implements ClientHandler {
                 if (e.getClickCount() == 2) {
                     int row = historyTable.getSelectedRow();
                     if (row != -1) {
-                        String input = (String) tableModel.getValueAt(row, 2);
-                        String output = (String) tableModel.getValueAt(row, 3);
+                        String input = (String) tableModel.getValueAt(row, 0);
+                        String output = (String) tableModel.getValueAt(row, 1);
                         showHistoryDetail(input, output);
                     }
                 }
@@ -84,6 +93,52 @@ public class HistoryPage extends JPanel implements ClientHandler {
         });
 
         // TODO: 添加按日期检索的功能
+    }
+
+    private void loadHistoryData(int function) {
+        if (client == null) {
+            System.err.println("Client尚未设置, 无法加载历史记录。");
+            tableModel.setRowCount(0); // 清空表格
+            return;
+        }
+
+        try {
+            int functionIndex = getFunctionIndex(function);
+            ResultSet rs = recordRetriever.getTable(client.getUID(), functionIndex);
+            // 清空现有数据
+            tableModel.setRowCount(0);
+            // 填充表格数据
+            while (rs.next()) {
+                String selection = rs.getString("SELECTION");
+                String content = rs.getString("CONTENT");
+                String response = rs.getString("RESPONSE");
+                Timestamp timeStamp = rs.getTimestamp("TIME_STAMP");
+                Object[] rowData = {content, response, selection, timeStamp};
+                tableModel.addRow(rowData);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 在界面上显示加载失败的消息
+            JOptionPane.showMessageDialog(this, "加载历史记录失败: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private int getFunctionIndex(int function) {
+        switch (function) {
+            case 1:
+                return 0;
+            case 2:
+                return 1;
+            case 3:
+                return 2;
+            case 4:
+                return 3;
+            case 0:
+                return 5;
+            default: // "All"
+                return 5; // 对应 RecordRetriever 中表示所有功能的数值
+        }
     }
 
     private void showHistoryDetail(String input, String output) {
@@ -116,24 +171,11 @@ public class HistoryPage extends JPanel implements ClientHandler {
         detailDialog.setVisible(true);
     }
 
-    // TODO: 实现按日期和功能筛选历史记录的功能
-    public void filterHistory(String function, Date startDate, Date endDate) {
-        // 实际应用中需要根据选择的条件更新 tableModel 中的数据
-        // 这里只是一个示例，简单地打印筛选条件
-        System.out.println("筛选条件：功能=" + function + ", 开始日期=" + startDate + ", 结束日期=" + endDate);
-        // 刷新表格数据
-        updateHistoryTable(historyData); // 实际应根据筛选结果更新数据
-    }
-
-    private void updateHistoryTable(Object[][] data) {
-        tableModel.setDataVector(data, columnNames);
-        tableModel.fireTableDataChanged();
-    }
 
     @Override
     public void setClient(Client client) {
         this.client = client;
+        // 当 Client 设置后，加载历史记录
+        loadHistoryData(functionFilterComboBox.getSelectedIndex());
     }
-
-
 }

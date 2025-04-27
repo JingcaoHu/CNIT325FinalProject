@@ -54,5 +54,6 @@ public class MainPanel extends JPanel implements ClientHandler {
         this.client = client;
         page1.setClient(client);
         page2.setClient(client);
+        historyPage.setClient(client);
     }
 }
