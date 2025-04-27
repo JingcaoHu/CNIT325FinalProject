@@ -1,16 +1,11 @@
 import React from 'react';
-import ChatInterface from './components/ChatInterface';
-import './styles/App.css';
+import LoginPage from './LoginPage';
+import './App.css';
 
 function App() {
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>LM Studio Assistant</h1>
-      </header>
-      <main>
-        <ChatInterface />
-      </main>
+    <div className="App">
+      <LoginPage />
     </div>
   );
 }

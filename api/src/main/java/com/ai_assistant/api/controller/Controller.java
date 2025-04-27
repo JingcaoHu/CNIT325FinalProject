@@ -1,12 +1,12 @@
 package com.ai_assistant.api.controller;
 
-import com.ai_assistant.api.model.AIConnection;
-import com.ai_assistant.api.model.Prompt;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ai_assistant.api.model.AIConnection;
+import com.ai_assistant.api.model.Prompt;
 
 @RestController
 @RequestMapping("api")
