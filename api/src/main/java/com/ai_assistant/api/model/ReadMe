@@ -1,0 +1,13 @@
+Interfaces: 
+    ConnectionHandler.java
+    DatabaseHandler.java
+
+Inheritance:
+    Abstract class: DatabaseConnection.java (includes basic information to inherit: JDBC_URL, USERNAME, PASSWORD)
+    Implemented: CreateTable.java | InsertRecord.java
+    To be implemented: RetriveRecord.java
+
+TO DOs:
+    1. front end
+    2. file overwrite
+    3. record retrival

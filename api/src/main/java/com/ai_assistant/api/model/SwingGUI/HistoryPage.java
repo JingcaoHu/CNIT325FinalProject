@@ -46,6 +46,8 @@ public class HistoryPage extends JPanel implements ClientHandler {
     private final String[] columnNames = {"日期", "功能", "用户输入", "程序输出"};
 
     public HistoryPage(MainPanel panel) {
+        currentLocale = new Locale("zh","CN");
+        bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
         
         this.mainPanel = panel;
         setLayout(new BorderLayout(5, 5));
@@ -65,8 +67,8 @@ public class HistoryPage extends JPanel implements ClientHandler {
         add(scrollPane, BorderLayout.CENTER);
 
         //Get HISTORY table data to display
-        RecordRetriever record = new RecordRetriever();
-        ResultSet rs = record.getTable(client.getUID(), functionFilterComboBox.getSelectedIndex());
+        // RecordRetriever record = new RecordRetriever();
+        // ResultSet rs = record.getTable(client.getUID(), functionFilterComboBox.getSelectedIndex());
         
         // 双击表格行事件
         historyTable.addMouseListener(new MouseAdapter() {
