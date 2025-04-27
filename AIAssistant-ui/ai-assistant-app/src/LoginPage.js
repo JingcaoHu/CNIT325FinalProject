@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import './LoginPage.css'; // We'll create this next
+import './LoginPage.css';
 
-function LoginPage() {
+function LoginPage({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Very simple validation
+    
+    // Simple validation
     if (username === 'admin' && password === 'password') {
-      setMessage('Login successful!');
+      setMessage('Login successful! Redirecting...');
+      // Call onLogin after a brief delay to show the message
+      setTimeout(() => {
+        onLogin();
+      }, 1000);
     } else {
       setMessage('Invalid username or password');
     }
