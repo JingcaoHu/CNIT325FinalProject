@@ -23,6 +23,7 @@ public class Page2 extends JPanel implements ClientHandler {
     private JComboBox<String> functionComboBox;
     private JButton sendButton;
     private Client client;
+    
 
     public Page2() {
         setLayout(new BorderLayout(5, 5));

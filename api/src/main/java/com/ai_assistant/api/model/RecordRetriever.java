@@ -5,12 +5,16 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class RetrieveRecord extends DatabaseConnection implements ConnectionHandler{
+public class RecordRetriever extends DatabaseConnection{
     Connection conn = null;
     Statement statement = null;
+    int selectedFunction;
+
+    public RecordRetriever(){
+
+    }
     
-    @Override
-    public String runConnection(int port, String address, Prompt passedInfo) {
+    public ResultSet getTable(int UID, int selectedFunction) {
 
         ResultSet resultSet = null;
 
@@ -22,23 +26,24 @@ public class RetrieveRecord extends DatabaseConnection implements ConnectionHand
                 System.out.println("Connected to database.");
                 statement = (Statement) conn.createStatement();
 
-                String createTableSQL = "CREATE TABLE IF NOT EXISTS HISTORY (" +
-                                        "RECORD_ID INT AUTO_INCREMENT PRIMARY KEY," +
-                                        "UID VARCHAR(6) NOT NULL," +
-                                        "SELECTION VARCHAR(10) NOT NULL,"+
-                                        "CONTENT VARCHAR(4096)," +
-                                        "RESPONSE VARCHAR(4096)," +
-                                        "TIME_STAMP TIMESTAMP" +
-                                        ")";
-                statement.executeUpdate(createTableSQL);
+                String createTableSQL = "SELECT * FROM HISTORY" +
+                                        "WHERE UID = " +  UID;
+
+                //Add SQL query constraint if selection filter is set
+                if (selectedFunction != 5){
+                    String function = DatabaseConnection.getSelection(selectedFunction);
+                    createTableSQL = createTableSQL + "AND SELECTION = " + function;
+                }
+
+                //Add SQL query constraint if time filter is set
+                //To-do code here
+
+                resultSet = statement.executeQuery(createTableSQL);
+
+                return resultSet;
             }
         } catch (Exception e) {
         }
-
-
-
-
-
         return null;
     }
     

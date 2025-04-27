@@ -35,28 +35,12 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
         } catch (SQLException e) {
             System.err.println("Error: Cannot create table: " + e.getMessage());
         } finally {
-            closeResources(conn, statement, null);
+            DatabaseConnection.closeResources(conn, statement, null);
         }
         return null;
     }
 
-    private static void closeResources(Connection conn, Statement stmt, java.sql.ResultSet rs) {
-        try {
-            if (rs != null) rs.close();
-        } catch (SQLException e) {
-            System.err.println("Error closing ResultSet: " + e.getMessage());
-        }
-        try {
-            if (stmt != null) stmt.close();
-        } catch (SQLException e) {
-            System.err.println("Error closing Statement: " + e.getMessage());
-        }
-        try {
-            if (conn != null) conn.close();
-        } catch (SQLException e) {
-            System.err.println("Error closing Connection: " + e.getMessage());
-        }
-    }
+
 
     //Test main
     // public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {

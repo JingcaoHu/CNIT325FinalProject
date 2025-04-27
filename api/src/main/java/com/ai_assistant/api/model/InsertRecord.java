@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
     Connection conn = null;
@@ -26,19 +25,6 @@ public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
         this.statement = statement;
     }
    
-    public String getSelection(int selection){
-        switch (selection){
-            case 0:
-                return "Suggestion";
-            case 1:
-                return "Debug";
-            case 3:
-                return "Generic";
-            default:
-                throw new IllegalArgumentException("Invalid selection value: " + selection);
-        }
-    }
-
     @Override
     public String connectDatabase(Prompt prompt) {
         try {
@@ -52,7 +38,7 @@ public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
                                         "VALUES (?, ?, ?, ?, ?)";
                 statement = conn.prepareStatement(insertRecordSQL);
                 statement.setInt(1, prompt.getUID());
-                statement.setString(2, getSelection(prompt.getSelection()));
+                statement.setString(2, DatabaseConnection.getSelection(prompt.getSelection()));
                 statement.setString(3, prompt.getContent());
                 statement.setString(4, prompt.getResponse());
                 statement.setString(5, prompt.getTimeStamp());
@@ -68,27 +54,9 @@ public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
         } catch (SQLException e) {
             System.err.println("Error: Insertion failed: " + e.getMessage());
         } finally {
-            closeResources(conn, statement, null);
+            DatabaseConnection.closeResources(conn, statement, null);
         }
         return null;
-    }
-    
-    private static void closeResources(Connection conn, Statement stmt, java.sql.ResultSet rs) {
-        try {
-            if (rs != null) rs.close();
-        } catch (SQLException e) {
-            System.err.println("Error closing ResultSet: " + e.getMessage());
-        }
-        try {
-            if (stmt != null) stmt.close();
-        } catch (SQLException e) {
-            System.err.println("Error closing Statement: " + e.getMessage());
-        }
-        try {
-            if (conn != null) conn.close();
-        } catch (SQLException e) {
-            System.err.println("Error closing Connection: " + e.getMessage());
-        }
     }
     
     //Test main

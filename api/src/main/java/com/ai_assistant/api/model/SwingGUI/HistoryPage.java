@@ -1,19 +1,40 @@
 package com.ai_assistant.api.model.SwingGUI;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
 import java.util.Date;
-import java.util.Vector;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-public class HistoryPage extends JPanel {
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+
+import com.ai_assistant.api.model.Client;
+import com.ai_assistant.api.model.RecordRetriever;
+
+public class HistoryPage extends JPanel implements ClientHandler {
 
     private JComboBox<String> functionFilterComboBox;
     private JTable historyTable;
     private DefaultTableModel tableModel;
     private MainPanel mainPanel;
+    private Client client;
+    Locale currentLocale;
+    ResourceBundle bundle;
 
     // 模拟历史记录数据
     private final Object[][] historyData = {
@@ -25,13 +46,14 @@ public class HistoryPage extends JPanel {
     private final String[] columnNames = {"日期", "功能", "用户输入", "程序输出"};
 
     public HistoryPage(MainPanel panel) {
+        
         this.mainPanel = panel;
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel filterLabel = new JLabel("按功能筛选:");
-        String[] functions = {"全部", "Hint", "Suggestion", "Debug", "Generic"};
+        String[] functions = {bundle.getString("selection1"), bundle.getString("selection2"), bundle.getString("selection3"), bundle.getString("selection4"), bundle.getString("selection5")};
         functionFilterComboBox = new JComboBox<>(functions);
         filterPanel.add(filterLabel);
         filterPanel.add(functionFilterComboBox);
@@ -42,6 +64,10 @@ public class HistoryPage extends JPanel {
         JScrollPane scrollPane = new JScrollPane(historyTable);
         add(scrollPane, BorderLayout.CENTER);
 
+        //Get HISTORY table data to display
+        RecordRetriever record = new RecordRetriever();
+        ResultSet rs = record.getTable(client.getUID(), functionFilterComboBox.getSelectedIndex());
+        
         // 双击表格行事件
         historyTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -103,4 +129,11 @@ public class HistoryPage extends JPanel {
         tableModel.setDataVector(data, columnNames);
         tableModel.fireTableDataChanged();
     }
+
+    @Override
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+
 }
