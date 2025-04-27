@@ -1,16 +1,26 @@
-import React from 'react';
-import ChatInterface from './components/ChatInterface';
-import './styles/App.css';
+import React, { useState } from 'react';
+import LoginPage from './LoginPage';
+import ChatInterface from './ChatInterface';
+import './App.css';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>LM Studio Assistant</h1>
-      </header>
-      <main>
-        <ChatInterface />
-      </main>
+    <div className="App">
+      {isLoggedIn ? (
+        <ChatInterface onLogout={handleLogout} />
+      ) : (
+        <LoginPage onLogin={handleLogin} />
+      )}
     </div>
   );
 }
