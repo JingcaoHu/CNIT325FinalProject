@@ -66,6 +66,6 @@ public class MainPanel extends JPanel implements ClientHandler {
     public void setLocale(String language, String country){
         page1.setLocale(language, country);
         page2.setLocale(language, country);
-        historyPage.setLocale(locale);
+        historyPage.setLocale(language, country);
     }
 }

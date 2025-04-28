@@ -97,7 +97,8 @@ public class MainFrame extends JFrame implements ClientHandler {
         this.currentLocale = new Locale(language,country);
         bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
         setTitle(bundle.getString("title"));
-        mainPanel.setLocale(currentLocale);
+        updateMenu();
+        mainPanel.setLocale(language, country);
     }
 
     private void updateMenu() {
