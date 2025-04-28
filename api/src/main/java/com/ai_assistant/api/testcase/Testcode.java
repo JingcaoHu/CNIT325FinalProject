@@ -1,56 +1,43 @@
 package com.ai_assistant.api.testcase;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 
-public class Testcode {
-    public int quickSelect(List<Integer> numList, int k){
-        if (numList.size() == 1){
-            return numList.get(0);
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        int length = intervals.length;
+        if (length == 1){
+            return intervals;
         }
-        List<Integer> big = new ArrayList<Integer>();
-        List<Integer> equal = new ArrayList<Integer>();
-        List<Integer> small = new ArrayList<Integer>();
-        int pivot = numList.get(0);
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
 
-        for (int num : numList){
-            if (num > pivot){
-                big.add(num);
+        Deque<Integer> leftStack = new LinkedList<>();
+        Deque<Integer> rightStack = new LinkedList<>();
+        leftStack.push(intervals[0][0]);
+        rightStack.push(intervals[0][1]);
+        int size = 1;
+        for (int i = 1; i < length; i++){
+            if (intervals[i][0] <= rightStack.peek()){
+                int temp = rightStack.peek();
+                if (intervals[i][1] > temp){ //New right is greater, replace old right
+                    rightStack.pop();
+                    rightStack.push(intervals[i][1]);
+                }
             }
-            else if (num == pivot){
-                equal.add(num);
-            }
-            else {
-                small.add(num);
-            }
+            else{
+                leftStack.push(intervals[i][0]);
+                rightStack.push(intervals[i][1]);
+                size++;
+            }   
         }
 
-        if (k <= big.size()) {
-            return quickSelect(big, k);
-        } else if (k == big.size() + equal.size()) {
-            return pivot;
-        } else {
-            return quickSelect(small, k - big.size() - equal.size());
+        int[][] result = new int[size][2];
+        for (int i = 0; i < size; i++){
+            result[i][0] = leftStack.pop();
+            result[i][1] = rightStack.pop();
         }
-    }
-    
-    
-    
-    
-    public int findKthLargest(int[] nums, int k) {
-        List<Integer> numList = new ArrayList<Integer>();
-        for (int num : nums){
-            numList.add(num);
-        }
-        return quickSelect(numList, k);
-    }
-
-    public static void main(String[] args) {
-        int[] input = {99,99};
-        int k = 1;
-        Testcode test = new Testcode();
-        int result = test.findKthLargest(input, k);
-        System.out.println(result);
+        Arrays.sort(result, (a, b) -> Integer.compare(a[0], b[0]));
+        return result;
     }
 }
-

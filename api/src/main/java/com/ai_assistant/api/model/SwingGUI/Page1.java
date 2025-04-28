@@ -44,6 +44,9 @@ public class Page1 extends JPanel implements ActionListener{
 
         responseTextArea = new JTextArea(10, 50);
         responseTextArea.setEditable(false);
+        //Set automatic line changing according to size of panel
+        responseTextArea.setLineWrap(true);
+        responseTextArea.setWrapStyleWord(true);
         add(new JScrollPane(responseTextArea), BorderLayout.CENTER);
 
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -65,11 +68,13 @@ public class Page1 extends JPanel implements ActionListener{
                 String filePath = filePathField.getText();
                 FileExtractor file = new FileExtractor(filePath);
                 String question = file.getContent();
+                //Indexes of functions: 0. Hint 1. Suggestion 2. Debug 3. Generic
                 int selectedFunction = functionComboBox.getSelectedIndex();
                 Prompt prompt = new Prompt(client.getUID(), selectedFunction, question, null);
-                //Hard coded UID, port, and address for test
+                //Hard coded port, and address for test
                 String response = client.runConnection(8189, "127.0.0.1", prompt);
-                responseTextArea.setText(response);
+                String formattedResponse = response.replace("\\n", "\n");
+                responseTextArea.setText(formattedResponse);
                 System.out.println("Request completed.");
             }
 }

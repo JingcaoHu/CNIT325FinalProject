@@ -38,6 +38,8 @@ public class Page2 extends JPanel implements ClientHandler {
         outputTextArea = new JTextArea(10, 25);
         outputTextArea.setEditable(false);
         outputTextArea.setBorder(BorderFactory.createTitledBorder("程序输出"));
+        outputTextArea.setLineWrap(true);
+        outputTextArea.setWrapStyleWord(true);
         splitPane.setRightComponent(new JScrollPane(outputTextArea));
 
         add(splitPane, BorderLayout.CENTER);
@@ -53,7 +55,8 @@ public class Page2 extends JPanel implements ClientHandler {
                 Prompt prompt = new Prompt(client.getUID(), selectedFunction, inputTextArea.getText(), null);
                 // 在这里处理发送请求的逻辑
                 String output = client.runConnection(8189, "127.0.0.1", prompt);
-                outputTextArea.setText(output);
+                String formattedResponse = output.replace("\\n", "\n");
+                outputTextArea.setText(formattedResponse);
                 System.out.println("Request completed.");
             }
         });
