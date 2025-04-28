@@ -9,6 +9,7 @@ public class AIConnection {
     //
     public String getSelection(int selectionInt){
         switch (selectionInt) {
+        //Indexes of functions: 0. Hint 1. Suggestion 2. Debug 3. Generic
             case 0:
                 return "You are a helpful and experienced assistant in programming. " +
                         "Here is a snippet of code from a programmer who needs your help, " +
@@ -20,10 +21,16 @@ public class AIConnection {
                         "Note that you are required to only give suggestions to help the user improve " +
                         "DO NOT provide any direct answer!";
             case 1:
+                return "You are a helpful and experienced assistant in programming." +
+                        "Here is a snippet of code from a programmer who needs your help." +
+                        "Please give suggestions to the code provided, find issues,"+
+                        " and give possible solutions.";
+            
+            case 2:
                 return "You are a helpful and experienced assistant in programming. " +
                         "Here is a snippet of code from a human programmer who needs your help. " +
-                        "Please identify the problem he is trying to solve with the provided code " +
-                        "and create code solution. You are required to only return revised code." +
+                        "Please create a code solution based on the snippet of code. "+
+                        " You are required to only return revised code." +
                         "Please DO NOT return anything other than revised code " +
                         "so that the returned code can be executed directly. " +
                         "To explain the changes, you can use comment syntax between the code.";
@@ -38,6 +45,7 @@ public class AIConnection {
     public String runConnection(int selection, String AIInput, String address){
         String response = "Error occured, please check code.";
         String result = "Error: Cannot generate response";
+
         try {
             // Set up the endpoint URL
             URL url = new URL(address);
