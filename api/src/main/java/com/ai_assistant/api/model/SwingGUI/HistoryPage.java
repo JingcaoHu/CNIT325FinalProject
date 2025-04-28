@@ -178,4 +178,10 @@ public class HistoryPage extends JPanel implements ClientHandler {
         // 当 Client 设置后，加载历史记录
         loadHistoryData(functionFilterComboBox.getSelectedIndex());
     }
+
+    @Override
+    public void setLocale(String language, String country) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setLocale'");
+    }
 }

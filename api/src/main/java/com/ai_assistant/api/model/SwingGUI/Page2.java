@@ -69,4 +69,9 @@ public class Page2 extends JPanel implements ClientHandler {
     public void setClient(Client client) {
         this.client = client;
     }
+
+    @Override
+    public void setLocale(String language, String country) {
+        
+    }
 }

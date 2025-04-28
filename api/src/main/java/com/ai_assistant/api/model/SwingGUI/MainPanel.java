@@ -3,7 +3,9 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.swing.JPanel;
 
@@ -19,8 +21,12 @@ public class MainPanel extends JPanel implements ClientHandler {
     private Page1 page1;
     private Page2 page2;
     private HistoryPage historyPage;
+    private Locale locale;
+    ResourceBundle bundle;
 
     public MainPanel(MainFrame frame) {
+        locale = new Locale("en", "US");
+        bundle = ResourceBundle.getBundle("LocaleBundle", locale);
         this.mainFrame = frame;
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
@@ -55,5 +61,11 @@ public class MainPanel extends JPanel implements ClientHandler {
         page1.setClient(client);
         page2.setClient(client);
         historyPage.setClient(client);
+    }
+    @Override
+    public void setLocale(String language, String country){
+        page1.setLocale(language, country);
+        page2.setLocale(language, country);
+        historyPage.setLocale(locale);
     }
 }

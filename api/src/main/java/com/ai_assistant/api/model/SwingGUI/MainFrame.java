@@ -32,14 +32,14 @@ public class MainFrame extends JFrame implements ClientHandler {
     private RegisterPage registerPage;
     private MainPanel mainPanel;
 
-    Locale currentLocale;
+    private Locale currentLocale;
     ResourceBundle bundle;
 
     Client client;
 
     public MainFrame() {
         
-        currentLocale = new Locale("zh", "CN");
+        currentLocale = new Locale("en", "US"); //Default locale set to US English
         bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
         setTitle(bundle.getString("title"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,6 +91,13 @@ public class MainFrame extends JFrame implements ClientHandler {
         this.client = client;
         mainPanel.setClient(client);
         showCard("main");
+    }
+    @Override
+    public void setLocale(String language, String country){
+        this.currentLocale = new Locale(language,country);
+        bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
+        setTitle(bundle.getString("title"));
+        mainPanel.setLocale(currentLocale);
     }
 
     private void updateMenu() {

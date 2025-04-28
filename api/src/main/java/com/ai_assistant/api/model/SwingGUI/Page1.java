@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -19,24 +20,25 @@ import com.ai_assistant.api.model.Client;
 import com.ai_assistant.api.model.FileExtractor;
 import com.ai_assistant.api.model.Prompt;
 
-public class Page1 extends JPanel implements ActionListener{
+public class Page1 extends JPanel implements ActionListener, ClientHandler{
 
     private JTextField filePathField;
     private JTextArea responseTextArea;
     private JComboBox<String> functionComboBox;
     private JButton sendButton;
+    private JLabel filePathLabel;
     private Client client;
-    Locale currentLocale;
+    private Locale currentLocale;
     ResourceBundle bundle;
 
     public Page1() {
-        currentLocale = new Locale("zh", "CN");
+        currentLocale = new Locale("en", "US");
         bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel filePathLabel = new JLabel(bundle.getString("lblPath"));
+        filePathLabel = new JLabel(bundle.getString("lblPath"));
         filePathField = new JTextField(30);
         inputPanel.add(filePathLabel);
         inputPanel.add(filePathField);
@@ -59,8 +61,20 @@ public class Page1 extends JPanel implements ActionListener{
         add(controlPanel, BorderLayout.SOUTH);
     }
 
+    @Override
     public void setClient(Client client) {
         this.client = client;
+    }
+    @Override
+    public void setLocale(String language, String country){
+        this.currentLocale = new Locale(language, country);
+        bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
+        filePathLabel.setText(bundle.getString("lblPath"));
+        sendButton.setText(bundle.getString("btnSend"));
+        //Update the function selection comboBox
+        String[] functions = {bundle.getString("selection1"), bundle.getString("selection2"), bundle.getString("selection3"), bundle.getString("selection4")};
+        DefaultComboBoxModel<String> newModel = new DefaultComboBoxModel<>(functions);
+        functionComboBox.setModel(newModel);
     }
 
     @Override
