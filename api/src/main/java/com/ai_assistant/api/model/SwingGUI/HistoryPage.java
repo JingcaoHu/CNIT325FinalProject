@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -28,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import com.ai_assistant.api.model.Client;
+import com.ai_assistant.api.model.Prompt;
 import com.ai_assistant.api.model.RecordRetriever;
 
 public class HistoryPage extends JPanel implements ClientHandler {
@@ -94,7 +96,6 @@ public class HistoryPage extends JPanel implements ClientHandler {
             }
         });
 
-        // TODO: 添加按日期检索的功能
     }
 
     private void loadHistoryData(int function) {
@@ -144,32 +145,51 @@ public class HistoryPage extends JPanel implements ClientHandler {
     }
 
     private void showHistoryDetail(String input, String output) {
-        JDialog detailDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "历史记录详情", true);
+        JDialog detailDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), 
+                                         bundle.getString("historyDetailTitle"), 
+                                         true);
         detailDialog.setLayout(new BorderLayout(5, 5));
-        detailDialog.setSize(600, 400);
+        detailDialog.setSize(800, 600);
         detailDialog.setLocationRelativeTo(detailDialog.getParent());
-
+    
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setResizeWeight(0.5);
+    
         JTextArea inputTextArea = new JTextArea(input);
-        inputTextArea.setEditable(false);
-        inputTextArea.setBorder(BorderFactory.createTitledBorder("用户输入"));
-        detailDialog.add(new JScrollPane(inputTextArea), BorderLayout.WEST);
-
+        inputTextArea.setLineWrap(true);
+        inputTextArea.setWrapStyleWord(true);
+        JScrollPane inputScroll = new JScrollPane(inputTextArea);
+        inputScroll.setBorder(BorderFactory.createTitledBorder(bundle.getString("historyInputTitle")));
+        
         JTextArea outputTextArea = new JTextArea(output);
         outputTextArea.setEditable(false);
-        outputTextArea.setBorder(BorderFactory.createTitledBorder("程序输出"));
-        detailDialog.add(new JScrollPane(outputTextArea), BorderLayout.EAST);
-
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(inputTextArea), new JScrollPane(outputTextArea));
-        splitPane.setResizeWeight(0.5); // 左右比例
-        detailDialog.add(splitPane, BorderLayout.CENTER);
-
-        JButton closeButton = new JButton("关闭");
-        closeButton.addActionListener(e -> detailDialog.dispose());
-
+        outputTextArea.setLineWrap(true);
+        outputTextArea.setWrapStyleWord(true);
+        JScrollPane outputScroll = new JScrollPane(outputTextArea);
+        outputScroll.setBorder(BorderFactory.createTitledBorder(bundle.getString("historyOutputTitle")));
+    
+        splitPane.setLeftComponent(inputScroll);
+        splitPane.setRightComponent(outputScroll);
+    
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton resendButton = new JButton(bundle.getString("historyResendButton"));
+        JButton closeButton = new JButton(bundle.getString("historyCloseButton"));
+    
+        resendButton.addActionListener(e -> {
+            int selectedFunction = functionFilterComboBox.getSelectedIndex();
+            Prompt prompt = new Prompt(client.getUID(), selectedFunction, inputTextArea.getText(), null);
+            String newOutput = client.runConnection(8189, "127.0.0.1", prompt);
+            outputTextArea.setText(newOutput.replace("\\n", "\n"));
+        });
+    
+        closeButton.addActionListener(e -> detailDialog.dispose());
+    
+        buttonPanel.add(resendButton);
         buttonPanel.add(closeButton);
+    
+        detailDialog.add(splitPane, BorderLayout.CENTER);
         detailDialog.add(buttonPanel, BorderLayout.SOUTH);
-
+    
         detailDialog.setVisible(true);
     }
 
@@ -183,8 +203,7 @@ public class HistoryPage extends JPanel implements ClientHandler {
 
     @Override
     public void setLocale(String language, String country) {
-        currentLocale = new Locale(language, country);
-        bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
-        
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setLocale'");
     }
 }
