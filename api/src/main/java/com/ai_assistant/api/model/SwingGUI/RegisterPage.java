@@ -82,7 +82,7 @@ public class RegisterPage extends JPanel {
                     newUser.connectDatabase(null);
                     mainFrame.showCard("login");
                 } else {
-                    JOptionPane.showMessageDialog(RegisterPage.this, "Passwords Are Not Sane", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(RegisterPage.this, "Passwords Are Not Same", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
