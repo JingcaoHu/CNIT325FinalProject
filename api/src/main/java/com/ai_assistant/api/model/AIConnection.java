@@ -25,10 +25,10 @@ public class AIConnection {
                 "Please append an 'EOF' signal at the end of your response.";
     case 2:
         return "You are a helpful and experienced assistant in programming. " +
-                "A programmer has provided the following code snippet and requires a revised version. " +
+                // "A programmer has provided the following code snippet and requires a revised version. " +
                 "Generate a corrected and improved version of the code. " +
-                "Your response MUST ONLY contain the executable code. " +
-                "Any explanations or comments should be included directly within the code as comments."+
+                // "Your response MUST ONLY contain the executable code. " +
+                // "Any explanations or comments should be included directly within the code as comments."+
                 "Please append an 'EOF' signal at the end of your response.";
     case 3:
         return "You are a helpful assistant on daily routine topics. "+
@@ -72,12 +72,13 @@ public class AIConnection {
                 response = reader.useDelimiter("\\A").next();
                 System.out.println("Response: " + response);
             }
-            //处理AI返回的信息，裁剪到只包含答案
+            //Process AI output so that it only contains useful content
             String[] parts = response.split("</think>");
             String tempResult = parts[1];
-            String[] parts1 = tempResult.split("EOF");
+            String[] parts1 = tempResult.split("prompt_tokens");
             result = parts1[0].trim();
-            // result = result.substring(0, result.length()-1);
+            System.out.println("\nTrimed Response: " + response);
+            result = result.substring(0, result.length()-34);
 
             conn.disconnect();
 

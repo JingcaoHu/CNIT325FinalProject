@@ -42,7 +42,7 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
 
 
 
-    //Test main
+    // Test main
     // public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
     //     // Class.forName("com.mysql.jdbc.Driver").newInstance();
     //     Prompt test = new Prompt(1, 1, null, null);

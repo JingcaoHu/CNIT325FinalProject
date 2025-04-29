@@ -1,5 +1,7 @@
 package com.ai_assistant.api.model;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -42,19 +44,19 @@ public class Server{
                 try{
                     InputStream inStream = incoming.getInputStream();
                     OutputStream outStreamToClient = incoming.getOutputStream();
-                    Scanner input = new Scanner(inStream);
+                    BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
                     PrintWriter output = new PrintWriter(outStreamToClient, true);
 
                     // String inputStr = input.nextLine();
                     // Prompt prompt = parsePrompt(inputStr);
 
                     StringBuilder AIInput = new StringBuilder();
-                    while (input.hasNextLine()){
-                        String thisLine = input.nextLine();
-                        if (thisLine.trim().equals("END_OF_MESSAGE")){
+                    String line;
+                    while ((line = input.readLine()) != null){
+                        if (line.trim().equals("END_OF_MESSAGE")){
                             break;
                         }
-                        AIInput.append(thisLine);
+                        AIInput.append(line).append("\n"); // Append line with newline
                     }
                     Prompt prompt = parsePrompt(AIInput.toString());
                     // System.out.println(AIInput.toString());
@@ -64,6 +66,7 @@ public class Server{
                     
                     //把Prompt内容发送给AI并返回结果
                     String response = toAI.runConnection(prompt.selection, prompt.content, address);
+                    System.out.println("Server Debug Trimmed Response: " + response);
                     prompt.setResponse(response);
 
                     //在以下部分需要加入JDBC，使用Prompt对象的UID和时间戳保存问题和答复到数据库

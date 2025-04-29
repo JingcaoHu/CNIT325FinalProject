@@ -93,6 +93,8 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
             Prompt prompt = new Prompt(client.getUID(), selectedFunction, question, null);
             //Hard coded port, and address for test
             String response = client.runConnection(8189, "127.0.0.1", prompt);
+            System.out.println("Client Debug Page1 Received Response: " + response);
+            //Debug Message: 返回的消息在到此处时已经只有一半了
             String formattedResponse = response.replace("\\n", "\n");
             responseTextArea.setText(formattedResponse);
             System.out.println("Request completed.");
