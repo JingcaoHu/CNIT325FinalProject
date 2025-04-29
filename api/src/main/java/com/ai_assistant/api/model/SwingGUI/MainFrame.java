@@ -118,6 +118,8 @@ public class MainFrame extends JFrame implements ClientHandler {
         JButton button = new JButton(text);
         button.setAlignmentX(Component.LEFT_ALIGNMENT);
         button.addActionListener(listener);
+        //Use the Short.Max_VALUE to make the buttons as wide as the panel
+        button.setMaximumSize(new Dimension(Short.MAX_VALUE, button.getPreferredSize().height));
         menuPanel.add(button);
     }
 
