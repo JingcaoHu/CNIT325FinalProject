@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -45,6 +44,9 @@ public class HistoryPage extends JPanel implements ClientHandler {
     private final String[] columnNames = {"用户输入", "程序输出", "选择", "时间"};
 
     public HistoryPage(MainPanel panel) {
+        currentLocale = new Locale("en", "US");
+        bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
+
         this.mainPanel = panel;
         this.recordRetriever = new RecordRetriever();
         setLayout(new BorderLayout(5, 5));
@@ -181,7 +183,8 @@ public class HistoryPage extends JPanel implements ClientHandler {
 
     @Override
     public void setLocale(String language, String country) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLocale'");
+        currentLocale = new Locale(language, country);
+        bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
+        
     }
 }

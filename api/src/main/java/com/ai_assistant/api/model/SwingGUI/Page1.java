@@ -93,7 +93,7 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
             Prompt prompt = new Prompt(client.getUID(), selectedFunction, question, null);
             //Hard coded port, and address for test
             String response = client.runConnection(8189, "127.0.0.1", prompt);
-            String formattedResponse = response.replace("\n", "\n");
+            String formattedResponse = response.replace("\\n", "\n");
             responseTextArea.setText(formattedResponse);
             System.out.println("Request completed.");
         } else if (e.getSource() == overwriteButton){

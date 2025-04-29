@@ -10,33 +10,30 @@ public class AIConnection {
     public String getSelection(int selectionInt){
         switch (selectionInt) {
         //Indexes of functions: 0. Hint 1. Suggestion 2. Debug 3. Generic
-            case 0:
-                return "You are a helpful and experienced assistant in programming. " +
-                        "Here is a snippet of code from a programmer who needs your help, " +
-                        "please find out all existing code issues and room for improvement " +
-                        "and give suggestions of how to resolve the issues and improve the code. " +
-                        "The suggestion could include what could go wrong in the current code, " +
-                        "what logic can be used instead of the existing one in the code, " +
-                        "and what methods/functions/data structures can be used for better efficiency." +
-                        "Note that you are required to only give suggestions to help the user improve " +
-                        "DO NOT provide any direct answer!";
-            case 1:
-                return "You are a helpful and experienced assistant in programming." +
-                        "Here is a snippet of code from a programmer who needs your help." +
-                        "Please give suggestions to the code provided, find issues,"+
-                        " and give possible solutions.";
-            
-            case 2:
-                return "You are a helpful and experienced assistant in programming. " +
-                        "Here is a snippet of code from a human programmer who needs your help. " +
-                        "Please create a code solution based on the snippet of code. "+
-                        " You are required to only return revised code." +
-                        "Please DO NOT return anything other than revised code " +
-                        "so that the returned code can be executed directly. " +
-                        "To explain the changes, you can use comment syntax between the code.";
-            case 3:
-                return "You are a helpful assistant on daily routine topics. "+
-                        "Please answer questions from user in a short paragraph.";
+        case 0:
+        return "You are an expert programming advisor. " +
+                "When a programmer provides a snippet of code, your ONLY task is to analyze it for potential issues, areas for improvement, and adherence to best practices. " +
+                "You MUST provide your feedback and suggestions exclusively in detailed natural language explanations. " +
+                "Under NO circumstances should you generate or include any executable code in your response. " +
+                "Your goal is to guide the programmer with insightful advice and explanations, not to provide code solutions."+
+                "Please append an 'EOF' signal at the end of your response.";
+    case 1:
+        return "You are a helpful and experienced assistant in programming." +
+                "Here is a snippet of code from a programmer who needs your help." +
+                "Please provide suggestions, identify issues, and propose possible "+
+                "solutions in a bulleted list format using natural language."+
+                "Please append an 'EOF' signal at the end of your response.";
+    case 2:
+        return "You are a helpful and experienced assistant in programming. " +
+                "A programmer has provided the following code snippet and requires a revised version. " +
+                "Generate a corrected and improved version of the code. " +
+                "Your response MUST ONLY contain the executable code. " +
+                "Any explanations or comments should be included directly within the code as comments."+
+                "Please append an 'EOF' signal at the end of your response.";
+    case 3:
+        return "You are a helpful assistant on daily routine topics. "+
+                "Please answer questions from the user in a short paragraph."+
+                "Please append an 'EOF' signal at the end of your response.";
             default:
                 throw new AssertionError();
         }
@@ -78,9 +75,9 @@ public class AIConnection {
             //处理AI返回的信息，裁剪到只包含答案
             String[] parts = response.split("</think>");
             String tempResult = parts[1];
-            String[] parts1 = tempResult.split("}");
+            String[] parts1 = tempResult.split("EOF");
             result = parts1[0].trim();
-            result = result.substring(0, result.length()-1);
+            // result = result.substring(0, result.length()-1);
 
             conn.disconnect();
 
