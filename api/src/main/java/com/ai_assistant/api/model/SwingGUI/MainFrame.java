@@ -3,6 +3,8 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Locale;
@@ -13,7 +15,12 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -21,7 +28,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.ai_assistant.api.model.Client;
 import com.formdev.flatlaf.FlatDarculaLaf;
 
-public class MainFrame extends JFrame implements ClientHandler {
+public class MainFrame extends JFrame implements ClientHandler, ActionListener {
 
     private JPanel contentPanel;
     private CardLayout cardLayout;
@@ -31,6 +38,14 @@ public class MainFrame extends JFrame implements ClientHandler {
     private LoginPage loginPage;
     private RegisterPage registerPage;
     private MainPanel mainPanel;
+
+    //Set up menu system
+    private JMenuBar menubar;
+    private JMenu toolMenu, aboutMenu;
+    private JMenuItem exitItem, logoutItem, reportItem, aboutItem;
+    private JWindow aboutWindow;
+    private JLabel lblDesc;
+    private JButton btnBack, btnSponsor;
 
     private Locale currentLocale;
     ResourceBundle bundle;
@@ -46,6 +61,46 @@ public class MainFrame extends JFrame implements ClientHandler {
         setSize(800, 600);
         setLocationRelativeTo(null);
 
+        //Add Menubar system
+        menubar = new JMenuBar();
+        setJMenuBar(menubar);
+        toolMenu = new JMenu(bundle.getString("toolMenu"));
+        menubar.add(toolMenu);
+        aboutMenu = new JMenu(bundle.getString("aboutMenu"));
+        menubar.add(aboutMenu);
+
+        //Setup Tools menu
+        exitItem = new JMenuItem(bundle.getString("exitItem"));
+        exitItem.addActionListener(this);
+        toolMenu.add(exitItem);
+        logoutItem = new JMenuItem(bundle.getString("logoutItem"));
+        logoutItem.addActionListener(this);
+        toolMenu.add(logoutItem);
+
+        //Setup About menu
+        reportItem = new JMenuItem(bundle.getString("reportItem"));
+        reportItem.addActionListener(this);
+        aboutMenu.add(reportItem);
+        aboutItem = new JMenuItem(bundle.getString("aboutItem"));
+        aboutItem.addActionListener(this);
+        aboutMenu.add(aboutItem);
+
+        //Add a popup window for about operations
+        aboutWindow = new JWindow(this);
+        aboutWindow.getContentPane().setLayout(new BorderLayout());
+        lblDesc = new JLabel(bundle.getString("aboutDesc"));
+        btnSponsor = new JButton("Buy us a coffee");
+        btnSponsor.addActionListener(this);
+        btnBack = new JButton("Back");
+        btnBack.addActionListener(this);
+        JPanel southPanel = new JPanel();
+        southPanel.add(btnSponsor);
+        southPanel.add(btnBack);
+        aboutWindow.getContentPane().add(lblDesc, BorderLayout.CENTER);
+        aboutWindow.getContentPane().add(southPanel, BorderLayout.SOUTH);
+        aboutWindow.pack();
+
+        //Use a hashmap to store the card page objects
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         cards = new HashMap<>();
@@ -99,6 +154,7 @@ public class MainFrame extends JFrame implements ClientHandler {
         setTitle(bundle.getString("title"));
         updateMenu();
         mainPanel.setLocale(language, country);
+        registerPage.setLocale(language, country);
     }
 
     private void updateMenu() {
@@ -110,6 +166,15 @@ public class MainFrame extends JFrame implements ClientHandler {
         menuPanel.add(Box.createVerticalGlue());
         addButton(bundle.getString("userPage"), e -> mainPanel.showPage("history"));
         addButton(bundle.getString("settingPage"), e -> mainPanel.showPage("history"));
+        toolMenu.setText(bundle.getString("toolMenu"));
+        aboutMenu.setText(bundle.getString("aboutMenu"));
+        exitItem.setText(bundle.getString("exitItem"));
+        logoutItem.setText(bundle.getString("logoutItem"));
+        reportItem.setText(bundle.getString("reportItem"));
+        aboutItem.setText(bundle.getString("aboutItem"));
+        lblDesc.setText(bundle.getString("aboutDesc"));
+        btnSponsor.setText(bundle.getString("btnSponsor"));
+        btnBack.setText(bundle.getString("btnBack"));
         menuPanel.revalidate();
         menuPanel.repaint();
     }
@@ -132,5 +197,38 @@ public class MainFrame extends JFrame implements ClientHandler {
 
         SwingUtilities.invokeLater(MainFrame::new);
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == exitItem){
+            System.exit(0);
+        }
+
+        if (e.getSource() == logoutItem){
+            showCard("login");
+        }
+
+        if (e.getSource() == aboutItem){
+            Point location = menubar.getLocationOnScreen();
+            lblDesc.setText(bundle.getString("aboutDesc"));
+            aboutWindow.setLocation(location);
+            aboutWindow.setVisible(true);
+        }
+
+        if (e.getSource() == btnBack){
+            aboutWindow.setVisible(false);
+        }
+
+        if (e.getSource() == btnSponsor){
+            lblDesc.setText(bundle.getString("sponsorDesc"));
+        }
+
+        if (e.getSource() == reportItem){
+            Point location = menubar.getLocationOnScreen();
+            lblDesc.setText(bundle.getString("reportDesc"));
+            aboutWindow.setLocation(location);
+            aboutWindow.setVisible(true);
+        }
     }
 }

@@ -6,6 +6,8 @@ import com.ai_assistant.api.model.InsertUser;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class RegisterPage extends JPanel {
 
@@ -14,16 +16,24 @@ public class RegisterPage extends JPanel {
     private JPasswordField confirmPasswordField;
     private JButton registerButton;
     private JButton backToLoginButton;
-    private MainFrame mainFrame;
+    private JLabel usernameLabel, passwordLabel, confirmPasswordLabel;
+    private MainFrame mainFrame;  
+    private String language, country;
+    private Locale locale;
+    ResourceBundle bundle;
 
     public RegisterPage(MainFrame frame) {
+        language = "en";
+        country = "US";
+        locale = new Locale(language, country); //Set default locale to US English
+        bundle = ResourceBundle.getBundle("LocaleBundle", locale);
         this.mainFrame = frame;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel usernameLabel = new JLabel("Email:");
+        usernameLabel = new JLabel(bundle.getString("lblUID"));
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(usernameLabel, gbc);
@@ -33,7 +43,7 @@ public class RegisterPage extends JPanel {
         gbc.gridy = 0;
         add(emailField, gbc);
 
-        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel = new JLabel(bundle.getString("lblPwd"));
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(passwordLabel, gbc);
@@ -43,7 +53,7 @@ public class RegisterPage extends JPanel {
         gbc.gridy = 1;
         add(passwordField, gbc);
 
-        JLabel confirmPasswordLabel = new JLabel("Repeat Password:");
+        confirmPasswordLabel = new JLabel(bundle.getString("lblRepeatPwd"));
         gbc.gridx = 0;
         gbc.gridy = 2;
         add(confirmPasswordLabel, gbc);
@@ -53,7 +63,7 @@ public class RegisterPage extends JPanel {
         gbc.gridy = 2;
         add(confirmPasswordField, gbc);
 
-        registerButton = new JButton("Register");
+        registerButton = new JButton(bundle.getString("btnReg"));
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
@@ -78,7 +88,7 @@ public class RegisterPage extends JPanel {
         });
         add(registerButton, gbc);
 
-        backToLoginButton = new JButton("Back to Login");
+        backToLoginButton = new JButton(bundle.getString("btnBackToLogin"));
         gbc.gridy = 4;
         backToLoginButton.addActionListener(new ActionListener() {
             @Override
@@ -87,5 +97,15 @@ public class RegisterPage extends JPanel {
             }
         });
         add(backToLoginButton, gbc);
+    }
+
+    public void setLocale(String language, String country){
+        locale = new Locale(language, country);
+        bundle = ResourceBundle.getBundle("LocaleBundle", locale);
+        usernameLabel.setText(bundle.getString("lblUID"));
+        passwordLabel.setText(bundle.getString("lblPwd"));
+        confirmPasswordLabel.setText(bundle.getString("lblRepeatPwd"));
+        registerButton.setText(bundle.getString("btnReg"));
+        backToLoginButton.setText(bundle.getString("btnBackToLogin"));
     }
 }
