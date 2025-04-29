@@ -105,11 +105,27 @@ public class LoginPage extends JPanel {
                                 mainFrame.setClient(client);
                                 mainFrame.setLocale(language, country);
                                 mainFrame.showCard("main");
+                            }else {
+                                // Wrong password
+                                JOptionPane.showMessageDialog(LoginPage.this,
+                                bundle.getString("login.wrongPassword.message"),
+                                bundle.getString("login.wrongPassword.title"),
+                                JOptionPane.WARNING_MESSAGE);
                             }
+                        } else {
+                            // User not found
+                            JOptionPane.showMessageDialog(LoginPage.this,
+                            bundle.getString("login.userNotFound.message"),
+                            bundle.getString("login.userNotFound.title"),
+                            JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();
+                    JOptionPane.showMessageDialog(LoginPage.this, 
+                            bundle.getString("login.dbError"),
+                            bundle.getString("login.error"),
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
