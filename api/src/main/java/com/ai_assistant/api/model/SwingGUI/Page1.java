@@ -76,6 +76,7 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
         bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
         filePathLabel.setText(bundle.getString("lblPath"));
         sendButton.setText(bundle.getString("btnSend"));
+        overwriteButton.setText(bundle.getString("btnOverride"));
         //Update the function selection comboBox
         String[] functions = {bundle.getString("selection1"), bundle.getString("selection2"), bundle.getString("selection3"), bundle.getString("selection4")};
         DefaultComboBoxModel<String> newModel = new DefaultComboBoxModel<>(functions);

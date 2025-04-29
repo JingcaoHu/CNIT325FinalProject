@@ -13,12 +13,12 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -35,6 +35,7 @@ public class HistoryPage extends JPanel implements ClientHandler {
 
     private JComboBox<String> functionFilterComboBox;
     private JTable historyTable;
+    JLabel filterLabel;
     private DefaultTableModel tableModel;
     private MainPanel mainPanel;
     private Client client;
@@ -42,11 +43,13 @@ public class HistoryPage extends JPanel implements ClientHandler {
     ResourceBundle bundle;
     private RecordRetriever recordRetriever;
 
-    private final String[] columnNames = {"用户输入", "程序输出", "选择", "时间"};
+    private String[] columnNames;
 
     public HistoryPage(MainPanel panel) {
         currentLocale = new Locale("en", "US");
         bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
+        columnNames = new String[]{bundle.getString("colNameInput"), bundle.getString("colNameOutput"),
+                                bundle.getString("colNameSelection"), bundle.getString("colNameTime")};;
 
         this.mainPanel = panel;
         this.recordRetriever = new RecordRetriever();
@@ -54,14 +57,15 @@ public class HistoryPage extends JPanel implements ClientHandler {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel filterLabel = new JLabel("按功能筛选:");
-        String[] functions = {"All", "Hint", "Suggestion", "Debug", "Generic"};
+        filterLabel = new JLabel(bundle.getString("lblFunctionFilter"));
+        String[] functions = {bundle.getString("selection5"), bundle.getString("selection1"), 
+            bundle.getString("selection2"), bundle.getString("selection3"), bundle.getString("selection4")};
         functionFilterComboBox = new JComboBox<>(functions);
         filterPanel.add(filterLabel);
         filterPanel.add(functionFilterComboBox);
         add(filterPanel, BorderLayout.NORTH);
 
-        tableModel = new DefaultTableModel(null, columnNames);
+        tableModel = new NonEditableTableModel(null, columnNames);
         historyTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(historyTable);
         add(scrollPane, BorderLayout.CENTER);
@@ -89,7 +93,9 @@ public class HistoryPage extends JPanel implements ClientHandler {
                     if (row != -1) {
                         String input = (String) tableModel.getValueAt(row, 0);
                         String output = (String) tableModel.getValueAt(row, 1);
-                        showHistoryDetail(input, output);
+                        String selection = (String) tableModel.getValueAt(row, 2);
+                        System.out.println("Client Debug: 双击事件启动");
+                        showHistoryDetail(input, output, getSelectionIndex(selection));
                     }
                 }
             }
@@ -97,9 +103,24 @@ public class HistoryPage extends JPanel implements ClientHandler {
 
     }
 
+    private int getSelectionIndex(String selectionStr){
+        switch (selectionStr) {
+            case "Hint":
+                return 0;
+            case "Suggestion":
+                return 1;
+            case "Debug":
+                return 2;
+            case "Generic":
+                return 3;
+            default:
+                throw new AssertionError();
+        }
+    }
+
     private void loadHistoryData(int function) {
         if (client == null) {
-            System.err.println("Client尚未设置, 无法加载历史记录。");
+            System.err.println("Waiting for Client setup, cannot show history.");
             tableModel.setRowCount(0); // 清空表格
             return;
         }
@@ -121,8 +142,6 @@ public class HistoryPage extends JPanel implements ClientHandler {
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            // 在界面上显示加载失败的消息
-            JOptionPane.showMessageDialog(this, "加载历史记录失败: " + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -143,7 +162,7 @@ public class HistoryPage extends JPanel implements ClientHandler {
         }
     }
 
-    private void showHistoryDetail(String input, String output) {
+    private void showHistoryDetail(String input, String output, int selectedFunction) {
         JDialog detailDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), 
                                          bundle.getString("historyDetailTitle"), 
                                          true);
@@ -158,14 +177,14 @@ public class HistoryPage extends JPanel implements ClientHandler {
         inputTextArea.setLineWrap(true);
         inputTextArea.setWrapStyleWord(true);
         JScrollPane inputScroll = new JScrollPane(inputTextArea);
-        inputScroll.setBorder(BorderFactory.createTitledBorder(bundle.getString("historyInputTitle")));
+        inputScroll.setBorder(BorderFactory.createTitledBorder(bundle.getString("inputBorder")));
         
-        JTextArea outputTextArea = new JTextArea(output);
+        JTextArea outputTextArea = new JTextArea(output.replace("\\n", "\n"));
         outputTextArea.setEditable(false);
         outputTextArea.setLineWrap(true);
         outputTextArea.setWrapStyleWord(true);
         JScrollPane outputScroll = new JScrollPane(outputTextArea);
-        outputScroll.setBorder(BorderFactory.createTitledBorder(bundle.getString("historyOutputTitle")));
+        outputScroll.setBorder(BorderFactory.createTitledBorder(bundle.getString("outputBorder")));
     
         splitPane.setLeftComponent(inputScroll);
         splitPane.setRightComponent(outputScroll);
@@ -175,7 +194,6 @@ public class HistoryPage extends JPanel implements ClientHandler {
         JButton closeButton = new JButton(bundle.getString("historyCloseButton"));
     
         resendButton.addActionListener(e -> {
-            int selectedFunction = functionFilterComboBox.getSelectedIndex();
             Prompt prompt = new Prompt(client.getUID(), selectedFunction, inputTextArea.getText(), null);
             String newOutput = client.runConnection(8189, "127.0.0.1", prompt);
             outputTextArea.setText(newOutput.replace("\\n", "\n"));
@@ -202,7 +220,17 @@ public class HistoryPage extends JPanel implements ClientHandler {
 
     @Override
     public void setLocale(String language, String country) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLocale'");
+        currentLocale = new Locale(language, country);
+        bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
+        //Update locale in history
+        String[] columnNames = {bundle.getString("colNameInput"), bundle.getString("colNameOutput"),
+                                bundle.getString("colNameSelection"), bundle.getString("colNameTime")};
+        tableModel.setColumnIdentifiers(columnNames);
+        //Update selection
+        filterLabel.setText(bundle.getString("lblFunctionFilter"));
+        String[] functions = {bundle.getString("selection5"), bundle.getString("selection1"), 
+        bundle.getString("selection2"), bundle.getString("selection3"), bundle.getString("selection4")};
+        DefaultComboBoxModel<String> newModel = new DefaultComboBoxModel<>(functions);
+        functionFilterComboBox.setModel(newModel);
     }
 }

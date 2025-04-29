@@ -89,5 +89,6 @@ public class Page2 extends JPanel implements ClientHandler {
         String[] functions = {bundle.getString("selection1"), bundle.getString("selection2"), bundle.getString("selection3"), bundle.getString("selection4")};
         DefaultComboBoxModel<String> newModel = new DefaultComboBoxModel<>(functions);
         functionComboBox.setModel(newModel);
+        sendButton.setText(bundle.getString("btnSend"));
     }
 }
