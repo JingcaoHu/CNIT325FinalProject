@@ -26,6 +26,7 @@ public class Page2 extends JPanel implements ClientHandler {
     private JTextArea outputTextArea;
     private JComboBox<String> functionComboBox;
     private JButton sendButton;
+    private JSplitPane splitPane;
     private Client client;
     Locale currentLocale;
     ResourceBundle bundle;
@@ -38,7 +39,7 @@ public class Page2 extends JPanel implements ClientHandler {
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
         inputTextArea = new JTextArea(10, 25);
         inputAreaBorder = BorderFactory.createTitledBorder(bundle.getString("inputBorder"));
@@ -90,5 +91,8 @@ public class Page2 extends JPanel implements ClientHandler {
         DefaultComboBoxModel<String> newModel = new DefaultComboBoxModel<>(functions);
         functionComboBox.setModel(newModel);
         sendButton.setText(bundle.getString("btnSend"));
+        inputAreaBorder.setTitle(bundle.getString("inputBorder"));
+        outputAreaBorder.setTitle(bundle.getString("outputBorder"));
+        splitPane.repaint();
     }
 }
