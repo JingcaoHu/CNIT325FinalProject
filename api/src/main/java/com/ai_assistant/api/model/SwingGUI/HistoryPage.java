@@ -84,8 +84,8 @@ public class HistoryPage extends JPanel implements ClientHandler {
         historyTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1) { 
-                    int row = historyTable.rowAtPoint(e.getPoint());
+                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+                    int row = historyTable.getSelectedRow();
                     if (row != -1) {
                         String input = (String) tableModel.getValueAt(row, 0);
                         String output = (String) tableModel.getValueAt(row, 1);
