@@ -107,7 +107,5 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
                 e1.printStackTrace();
             }
         }
-   
     }
-
 }
