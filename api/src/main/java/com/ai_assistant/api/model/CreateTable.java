@@ -22,7 +22,7 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
 
                 String createTableSQL = "CREATE TABLE IF NOT EXISTS HISTORY (" +
                                         "RECORD_ID INT AUTO_INCREMENT PRIMARY KEY," +
-                                        "UID VARCHAR(6) NOT NULL," +
+                                        "UID INT NOT NULL," +
                                         "SELECTION VARCHAR(10) NOT NULL,"+
                                         "CONTENT VARCHAR(4096)," +
                                         "RESPONSE VARCHAR(4096)," +
@@ -31,6 +31,13 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
                 statement.executeUpdate(createTableSQL);
                 System.out.println("HISTORY table created or already exists.");
 
+                String createTableSQL2 = "CREATE TABLE IF NOT EXISTS USER (" +
+                                        "UID INT AUTO_INCREMENT PRIMARY KEY," +
+                                        "EMAIL VARCHAR(20) NOT NULL,"+
+                                        "PASSWORD VARCHAR(20) NOT NULL" +
+                                        ")";
+                statement.executeUpdate(createTableSQL2);
+                System.out.println("USER table created or already exists.");
             }
         } catch (SQLException e) {
             System.err.println("Error: Cannot create table: " + e.getMessage());

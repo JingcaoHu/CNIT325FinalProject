@@ -20,7 +20,7 @@ public class RegisterPage extends JPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel usernameLabel = new JLabel("账号:");
+        JLabel usernameLabel = new JLabel("Email:");
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(usernameLabel, gbc);
@@ -30,7 +30,7 @@ public class RegisterPage extends JPanel {
         gbc.gridy = 0;
         add(usernameField, gbc);
 
-        JLabel passwordLabel = new JLabel("密码:");
+        JLabel passwordLabel = new JLabel("Password:");
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(passwordLabel, gbc);
@@ -40,7 +40,7 @@ public class RegisterPage extends JPanel {
         gbc.gridy = 1;
         add(passwordField, gbc);
 
-        JLabel confirmPasswordLabel = new JLabel("重复密码:");
+        JLabel confirmPasswordLabel = new JLabel("Repeat Password:");
         gbc.gridx = 0;
         gbc.gridy = 2;
         add(confirmPasswordLabel, gbc);
@@ -50,7 +50,7 @@ public class RegisterPage extends JPanel {
         gbc.gridy = 2;
         add(confirmPasswordField, gbc);
 
-        registerButton = new JButton("注册");
+        registerButton = new JButton("Register");
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
@@ -61,17 +61,18 @@ public class RegisterPage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 // 在这里添加注册逻辑，并进行密码校验
                 if (new String(passwordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))) {
-                    System.out.println("尝试注册: " + usernameField.getText() + ", " + new String(passwordField.getPassword()));
+                    System.out.println("Attempting Register: " + usernameField.getText() + ", " + new String(passwordField.getPassword()));
                     // 假设注册成功后返回登录页面
+                    
                     mainFrame.showCard("login");
                 } else {
-                    JOptionPane.showMessageDialog(RegisterPage.this, "两次输入的密码不一致！", "错误", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(RegisterPage.this, "Passwords Are Not Sane", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
         add(registerButton, gbc);
 
-        backToLoginButton = new JButton("返回登录");
+        backToLoginButton = new JButton("Back to Login");
         gbc.gridy = 4;
         backToLoginButton.addActionListener(new ActionListener() {
             @Override
