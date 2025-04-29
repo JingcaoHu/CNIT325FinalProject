@@ -3,6 +3,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -25,7 +27,7 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
     private JTextField filePathField;
     private JTextArea responseTextArea;
     private JComboBox<String> functionComboBox;
-    private JButton sendButton;
+    private JButton sendButton, overwriteButton;
     private JLabel filePathLabel;
     private Client client;
     private Locale currentLocale;
@@ -56,8 +58,11 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
         functionComboBox = new JComboBox<>(functions);
         sendButton = new JButton(bundle.getString("btnSend"));
         sendButton.addActionListener(this);
+        overwriteButton = new JButton(bundle.getString("btnOverride"));
+        overwriteButton.addActionListener(this);
         controlPanel.add(functionComboBox);
         controlPanel.add(sendButton);
+        controlPanel.add(overwriteButton);
         add(controlPanel, BorderLayout.SOUTH);
     }
 
@@ -78,17 +83,31 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
     }
 
     @Override
-            public void actionPerformed(ActionEvent e) {
-                String filePath = filePathField.getText();
-                FileExtractor file = new FileExtractor(filePath);
-                String question = file.getContent();
-                //Indexes of functions: 0. Hint 1. Suggestion 2. Debug 3. Generic
-                int selectedFunction = functionComboBox.getSelectedIndex();
-                Prompt prompt = new Prompt(client.getUID(), selectedFunction, question, null);
-                //Hard coded port, and address for test
-                String response = client.runConnection(8189, "127.0.0.1", prompt);
-                String formattedResponse = response.replace("\\n", "\n");
-                responseTextArea.setText(formattedResponse);
-                System.out.println("Request completed.");
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == sendButton){
+            String filePath = filePathField.getText();
+            FileExtractor file = new FileExtractor(filePath);
+            String question = file.getContent();
+            //Indexes of functions: 0. Hint 1. Suggestion 2. Debug 3. Generic
+            int selectedFunction = functionComboBox.getSelectedIndex();
+            Prompt prompt = new Prompt(client.getUID(), selectedFunction, question, null);
+            //Hard coded port, and address for test
+            String response = client.runConnection(8189, "127.0.0.1", prompt);
+            String formattedResponse = response.replace("\n", "\n");
+            responseTextArea.setText(formattedResponse);
+            System.out.println("Request completed.");
+        } else if (e.getSource() == overwriteButton){
+            String filePath = filePathField.getText();
+            String lines = responseTextArea.getText();
+
+            try (FileWriter writer = new FileWriter(filePath)){
+                writer.write(lines);
+            } catch(IOException e1){
+                System.out.println("Error Message: " + e1.getMessage());
+                e1.printStackTrace();
             }
+        }
+   
+    }
+
 }
