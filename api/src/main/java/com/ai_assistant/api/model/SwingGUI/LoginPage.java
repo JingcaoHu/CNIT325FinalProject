@@ -4,6 +4,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -16,12 +21,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.ai_assistant.api.model.Client;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
 
 public class LoginPage extends JPanel {
 
@@ -81,13 +80,12 @@ public class LoginPage extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 在这里添加登录逻辑
+                //Login logics
                 System.out.println("Login attempted: " + emailField.getText() + ", " + new String(passwordField.getPassword()));
                 String email = emailField.getText();
                 String password = new String(passwordField.getPassword()).trim();
 
-                //To-do code: Authentication in DB
-
+                //Authentication in DB
                 try (Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
                     String sql = "SELECT UID, PASSWORD FROM USER WHERE EMAIL = ?";
                     System.out.println(sql);
@@ -107,19 +105,19 @@ public class LoginPage extends JPanel {
                                 mainFrame.showCard("main");
                             }else {
                                 // Wrong password
-                                JOptionPane.showMessageDialog(LoginPage.this, "Wrong Password!", "Error", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(LoginPage.this, bundle.getString("popErrorWrongPwd"), bundle.getString("popErrorTitle"), JOptionPane.ERROR_MESSAGE);
                             }
                         } else {
                             // User not found
-                            JOptionPane.showMessageDialog(LoginPage.this, "Email or Password not Found!", "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(LoginPage.this, bundle.getString("popErrorWrongUsr"), bundle.getString("popErrorTitle"), JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(LoginPage.this, 
-                            bundle.getString("login.dbError"),
-                            bundle.getString("login.error"),
-                            JOptionPane.ERROR_MESSAGE);
+                    // JOptionPane.showMessageDialog(LoginPage.this, 
+                    //         bundle.getString("login.dbError"),
+                    //         bundle.getString("login.error"),
+                    //         JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
