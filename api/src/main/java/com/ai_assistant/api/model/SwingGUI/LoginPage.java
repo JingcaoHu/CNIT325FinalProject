@@ -10,15 +10,22 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.ai_assistant.api.model.Client;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
 public class LoginPage extends JPanel {
 
-    private JTextField usernameField;
+    private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
     private JButton registerButton;
@@ -29,6 +36,10 @@ public class LoginPage extends JPanel {
     private String language, country;
     private Locale locale;
     ResourceBundle bundle;
+
+    protected  static final String JDBC_URL = "jdbc:mysql://localhost:3306/ai_assistant_database";
+    protected  static final String USERNAME = "root";
+    protected  static final String PASSWORD = "rootroot";
 
     public LoginPage(MainFrame frame) {
         language = "en";
@@ -46,10 +57,10 @@ public class LoginPage extends JPanel {
         gbc.gridy = 0;
         add(usernameLabel, gbc);
 
-        usernameField = new JTextField(20);
+        emailField = new JTextField(20);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        add(usernameField, gbc);
+        add(emailField, gbc);
 
         passwordLabel = new JLabel(bundle.getString("lblPwd"));
         gbc.gridx = 0;
@@ -71,19 +82,38 @@ public class LoginPage extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 在这里添加登录逻辑
-                System.out.println("Login attempted: " + usernameField.getText() + ", " + new String(passwordField.getPassword()));
-                int UID = Integer.parseInt(usernameField.getText());
+                System.out.println("Login attempted: " + emailField.getText() + ", " + new String(passwordField.getPassword()));
+                String email = emailField.getText();
+                String password = new String(passwordField.getPassword()).trim();
 
                 //To-do code: Authentication in DB
-                boolean authenticated = true;
-                if (authenticated){
-                    Client client = new Client(UID, new String(passwordField.getPassword()));
-                // 假设登录成功后切换到主面板
-                    mainFrame.setClient(client);
-                    mainFrame.setLocale(language, country);
+
+                try (Connection conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
+                    String sql = "SELECT UID, PASSWORD FROM USER WHERE EMAIL = ?";
+                    System.out.println(sql);
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                        stmt.setString(1, email);
+                        ResultSet rs = stmt.executeQuery();
+
+                        if (rs.next()) {
+                            String storedPassword = rs.getString("PASSWORD");
+                            if (password.equals(storedPassword)) {
+                                // Authentication successful
+                                int UID = rs.getInt("UID");
+                                System.out.println(UID);
+                                Client client = new Client(UID, new String(passwordField.getPassword()));
+                                mainFrame.setClient(client);
+                                mainFrame.setLocale(language, country);
+                                mainFrame.showCard("main");
+                            }
+                        }
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
+
         add(loginButton, gbc);
 
         registerButton = new JButton(bundle.getString("btnReg"));

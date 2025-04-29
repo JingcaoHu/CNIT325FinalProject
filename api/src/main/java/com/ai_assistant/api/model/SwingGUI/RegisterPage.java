@@ -1,12 +1,15 @@
 package com.ai_assistant.api.model.SwingGUI;
 import javax.swing.*;
+
+import com.ai_assistant.api.model.InsertUser;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class RegisterPage extends JPanel {
 
-    private JTextField usernameField;
+    private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
     private JButton registerButton;
@@ -25,10 +28,10 @@ public class RegisterPage extends JPanel {
         gbc.gridy = 0;
         add(usernameLabel, gbc);
 
-        usernameField = new JTextField(20);
+        emailField = new JTextField(20);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        add(usernameField, gbc);
+        add(emailField, gbc);
 
         JLabel passwordLabel = new JLabel("Password:");
         gbc.gridx = 0;
@@ -61,9 +64,12 @@ public class RegisterPage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 // 在这里添加注册逻辑，并进行密码校验
                 if (new String(passwordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))) {
-                    System.out.println("Attempting Register: " + usernameField.getText() + ", " + new String(passwordField.getPassword()));
+                    System.out.println("Attempting Register: " + emailField.getText() + ", " + new String(passwordField.getPassword()));
                     // 假设注册成功后返回登录页面
-                    
+                    String email = emailField.getText();
+                    String password = new String(passwordField.getPassword()).trim();
+                    InsertUser newUser = new InsertUser(email, password);
+                    newUser.connectDatabase(null);
                     mainFrame.showCard("login");
                 } else {
                     JOptionPane.showMessageDialog(RegisterPage.this, "Passwords Are Not Sane", "Error", JOptionPane.ERROR_MESSAGE);
