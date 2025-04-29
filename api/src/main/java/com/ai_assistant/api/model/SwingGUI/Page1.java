@@ -47,7 +47,7 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
         add(inputPanel, BorderLayout.NORTH);
 
         responseTextArea = new JTextArea(10, 50);
-        responseTextArea.setEditable(false);
+        responseTextArea.setEditable(true);
         //Set automatic line changing according to size of panel
         responseTextArea.setLineWrap(true);
         responseTextArea.setWrapStyleWord(true);

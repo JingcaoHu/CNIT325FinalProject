@@ -16,24 +16,22 @@ public class AIConnection {
                 "You MUST provide your feedback and suggestions exclusively in detailed natural language explanations. " +
                 "Under NO circumstances should you generate or include any executable code in your response. " +
                 "Your goal is to guide the programmer with insightful advice and explanations, not to provide code solutions."+
-                "Please append an 'EOF' signal at the end of your response.";
+                "Please append an 'HINT' signal at the end of your response.";
     case 1:
         return "You are a helpful and experienced assistant in programming." +
                 "Here is a snippet of code from a programmer who needs your help." +
                 "Please provide suggestions, identify issues, and propose possible "+
                 "solutions in a bulleted list format using natural language."+
-                "Please append an 'EOF' signal at the end of your response.";
+                "Please append an 'SUGGESTION' signal at the end of your response.";
     case 2:
         return "You are a helpful and experienced assistant in programming. " +
-                // "A programmer has provided the following code snippet and requires a revised version. " +
-                "Generate a corrected and improved version of the code. " +
-                // "Your response MUST ONLY contain the executable code. " +
+                "Generate a corrected and improved version of the code provided. " +
+                "Please put all your explanations in between the code as comments.";
                 // "Any explanations or comments should be included directly within the code as comments."+
-                "Please append an 'EOF' signal at the end of your response.";
     case 3:
         return "You are a helpful assistant on daily routine topics. "+
                 "Please answer questions from the user in a short paragraph."+
-                "Please append an 'EOF' signal at the end of your response.";
+                "Please append an 'GENERIC' signal at the end of your response.";
             default:
                 throw new AssertionError();
         }
@@ -73,12 +71,17 @@ public class AIConnection {
                 System.out.println("Response: " + response);
             }
             //Process AI output so that it only contains useful content
-            String[] parts = response.split("</think>");
-            String tempResult = parts[1];
-            String[] parts1 = tempResult.split("prompt_tokens");
-            result = parts1[0].trim();
-            System.out.println("\nTrimed Response: " + response);
-            result = result.substring(0, result.length()-34);
+            if (selection == 2){
+                String[] parts = response.split("```");
+                String tempResult = parts[1];
+                result = "//" + tempResult;
+            }else{
+                String[] parts = response.split("</think>");
+                String tempResult = parts[1];
+                String[] parts1 = tempResult.split("prompt_tokens");
+                result = parts1[0].trim();
+                result = result.substring(0, result.length()-35);
+            }
 
             conn.disconnect();
 
