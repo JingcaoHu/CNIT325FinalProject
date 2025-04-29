@@ -1,13 +1,20 @@
 package com.ai_assistant.api.model.SwingGUI;
-import javax.swing.*;
-
-import com.ai_assistant.api.model.InsertUser;
-
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import com.ai_assistant.api.model.InsertUser;
 
 public class RegisterPage extends JPanel {
 

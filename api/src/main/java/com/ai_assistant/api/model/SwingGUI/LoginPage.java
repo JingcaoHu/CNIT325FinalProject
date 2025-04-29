@@ -107,17 +107,11 @@ public class LoginPage extends JPanel {
                                 mainFrame.showCard("main");
                             }else {
                                 // Wrong password
-                                JOptionPane.showMessageDialog(LoginPage.this,
-                                bundle.getString("login.wrongPassword.message"),
-                                bundle.getString("login.wrongPassword.title"),
-                                JOptionPane.WARNING_MESSAGE);
+                                JOptionPane.showMessageDialog(LoginPage.this, "Wrong Password!", "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         } else {
                             // User not found
-                            JOptionPane.showMessageDialog(LoginPage.this,
-                            bundle.getString("login.userNotFound.message"),
-                            bundle.getString("login.userNotFound.title"),
-                            JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(LoginPage.this, "Email or Password not Found!", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 } catch (SQLException ex) {
