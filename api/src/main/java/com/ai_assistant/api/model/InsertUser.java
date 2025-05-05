@@ -40,7 +40,7 @@ public class InsertUser extends DatabaseConnection implements DatabaseHandler{
             conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             
             if (conn != null) {
-                System.out.println("Connected to database.");
+                System.out.println("<DATABASE> Connected to database for user registration.");
 
                 String insertRecordSQL = "INSERT INTO USER (EMAIL, PASSWORD) " +
                                         "VALUES (?, ?)";
@@ -50,14 +50,14 @@ public class InsertUser extends DatabaseConnection implements DatabaseHandler{
 
 
                 int rowsAffected = statement.executeUpdate();
-                System.out.println("SQL executed.");
+                System.out.println("<DATABASE> SQL executed.");
 
                 if (rowsAffected == 0){
-                    System.out.println("Error: Insertion failed.");
+                    System.out.println("<DATABASE> Error: Insertion failed.");
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error: Insertion failed: " + e.getMessage());
+            System.err.println("<DATABASE> Error: Insertion failed: " + e.getMessage());
         } finally {
             DatabaseConnection.closeResources(conn, statement, null);
         }

@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,9 +22,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.EmptyBorder;
 
 import com.ai_assistant.api.model.Client;
 import com.formdev.flatlaf.FlatDarculaLaf;
@@ -89,27 +92,35 @@ public class MainFrame extends JFrame implements ClientHandler, ActionListener {
         aboutWindow = new JWindow(this);
         aboutWindow.getContentPane().setLayout(new BorderLayout());
         lblDesc = new JLabel(bundle.getString("aboutDesc"));
-        btnSponsor = new JButton("Buy us a coffee");
+        lblDesc.setHorizontalAlignment(SwingConstants.CENTER); //Center the text
+        lblDesc.setBorder(new EmptyBorder(15, 15, 15, 15)); //Add some padding around the text
+
+        btnSponsor = new JButton(bundle.getString("btnSponsor"));
         btnSponsor.addActionListener(this);
-        btnBack = new JButton("Back");
+        btnBack = new JButton(bundle.getString("btnBack"));
         btnBack.addActionListener(this);
-        JPanel southPanel = new JPanel();
-        southPanel.add(btnSponsor);
-        southPanel.add(btnBack);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)); //Use FlowLayout for buttons
+        buttonPanel.add(btnSponsor);
+        buttonPanel.add(btnBack);
+        buttonPanel.setBorder(new EmptyBorder(0, 0, 10, 0)); //Add padding below buttons
+
         aboutWindow.getContentPane().add(lblDesc, BorderLayout.CENTER);
-        aboutWindow.getContentPane().add(southPanel, BorderLayout.SOUTH);
+        aboutWindow.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        aboutWindow.setMinimumSize(new Dimension(300, 150)); //Set a minimum size
         aboutWindow.pack();
 
-        //Use a hashmap to store the card page objects
+        //Use a hashmap to store the card page objects: login, register, main
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         cards = new HashMap<>();
 
+        //Left side menu panel that stores buttons to navigate through pages
         menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
         menuPanel.setPreferredSize(new Dimension(150, getHeight()));
 
-        client = new Client(0, "");//Placeholder for client object
+        client = new Client(0);//Placeholder for client object
         loginPage = new LoginPage(this);
         registerPage = new RegisterPage(this);
         mainPanel = new MainPanel(this);
@@ -141,6 +152,7 @@ public class MainFrame extends JFrame implements ClientHandler, ActionListener {
         }
     }
 
+    //Update and pass client and locale information to next layer
     @Override
     public void setClient(Client client){
         this.client = client;
@@ -162,8 +174,9 @@ public class MainFrame extends JFrame implements ClientHandler, ActionListener {
         addButton(bundle.getString("page1"), e -> mainPanel.showPage("page1"));
         addButton(bundle.getString("page2"), e -> mainPanel.showPage("page2"));
         addButton(bundle.getString("page3"), e -> mainPanel.showPage("history"));
-        //Create a glue between buttons and profile/settings
+        //Create a glue between page navigator buttons and profile/setting buttons
         menuPanel.add(Box.createVerticalGlue());
+        //NOTE: userPage and settingPage are in WIP status. Currently using historyPage as placeholder.
         addButton(bundle.getString("userPage"), e -> mainPanel.showPage("history"));
         addButton(bundle.getString("settingPage"), e -> mainPanel.showPage("history"));
         toolMenu.setText(bundle.getString("toolMenu"));

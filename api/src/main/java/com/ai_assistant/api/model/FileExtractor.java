@@ -55,8 +55,7 @@ public class FileExtractor {
             reader = new BufferedReader(fileReader);
             String line;
             while ((line = reader.readLine()) != null) { 
-                sb.append(line);
-                sb.append(System.lineSeparator());
+                sb.append(line).append(System.lineSeparator());
             }
             return sb.toString();
         } catch (IOException e) {

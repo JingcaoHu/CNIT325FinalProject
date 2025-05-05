@@ -33,14 +33,15 @@ public class Server{
         return address;
     }
 
+    //Note: The port is referred to Server Port for this Server class, but the Address is referred to URL of AI service
     public void runConnection(int port, String address){
         try {
             ServerSocket ss = new ServerSocket(port);
-            System.out.println("Server: System up and running.");
+            System.out.println("<SERVER> Server up and running.");
             boolean over = false;
             while (!over){
                 Socket incoming = ss.accept();
-                System.out.println("Client Connected.");
+                System.out.println("<SERVER> Client Connected.");
                 try{
                     InputStream inStream = incoming.getInputStream();
                     OutputStream outStreamToClient = incoming.getOutputStream();
@@ -59,25 +60,21 @@ public class Server{
                         AIInput.append(line).append("\n"); // Append line with newline
                     }
                     Prompt prompt = parsePrompt(AIInput.toString());
-                    // System.out.println(AIInput.toString());
-
                     AIConnection toAI = new AIConnection();
-                    //StringBuilder AIOutput = new StringBuilder();
                     
-                    //把Prompt内容发送给AI并返回结果
+                    //Send prompt content to AI and set the response of prompt with returned value
                     String response = toAI.runConnection(prompt.selection, prompt.content, address);
-                    System.out.println("Server Debug Trimmed Response: " + response);
                     prompt.setResponse(response);
 
-                    //在以下部分需要加入JDBC，使用Prompt对象的UID和时间戳保存问题和答复到数据库
+                    //Implement JDBC below, use prompt object UID and timeStamp to store question and response to database
                     InsertRecord record = new InsertRecord();
                     record.connectDatabase(prompt);
 
 
-                    //以下是返回给客户端的信息
+                    //Return response String to client, then client displays String directly. Client does not need to access prompt objects.
                     output.println(response);
-                    System.out.println(prompt.getTimeStamp());
-                    System.out.println("Transaction completed.");
+                    // System.out.println(prompt.getTimeStamp());
+                    System.out.println("<SERVER> Task completed.");
                 }
                 finally{
                     incoming.close();
@@ -90,7 +87,7 @@ public class Server{
     }
 
     //Helper function to parse serialized Prompt object
-    //Serialized formate: UID<DELIMITER>selection<DELIMITER>content<DELIMITER>response<DELIMITER>timeStamp
+    //Serialized format: UID<DELIMITER>selection<DELIMITER>content<DELIMITER>response<DELIMITER>timeStamp
     public Prompt parsePrompt(String str){
         String[] parts = str.split("<DELIMITER>");
         int UID = Integer.parseInt(parts[0]);
@@ -100,10 +97,10 @@ public class Server{
         return prompt;
     }
 
-    //Helper function to get timestamp
+    //Helper function to get timestamp from time server
     //Output format: 25-04-21 03:26:15
     public String getTimeStamp(){
-        String timeStamp = "Time Stamp Not Available";
+        String timeStamp = "<SERVER> Time Stamp Not Available";
         String tempTimeStamp = "";
         String mysqlDateTimeString = "";
         try{
@@ -115,6 +112,7 @@ public class Server{
                 while(in.hasNextLine()){
                     tempTimeStamp = in.nextLine();
                 }
+                //Split the output from time server and trim it until it only contain time information
                 String[] parts = tempTimeStamp.split(" ");
                 if (parts.length >= 3){
                     timeStamp = parts[1] + " " + parts[2];
@@ -140,6 +138,7 @@ public class Server{
         CreateTable table = new CreateTable();
         table.connectDatabase(new Prompt(0, 0, null, null));
 
+        //Set the AI service URL here
         Server s1 = new Server(8189, "http://localhost:1234/v1/chat/completions");
         s1.runConnection(8189, "http://localhost:1234/v1/chat/completions");
     }

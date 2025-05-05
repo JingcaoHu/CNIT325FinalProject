@@ -36,6 +36,7 @@ public class MainPanel extends JPanel implements ClientHandler {
         page2 = new Page2();
         historyPage = new HistoryPage(this);
 
+        //Insert pages into Hashmap for later showPage function
         cards.put("page1", page1);
         cards.put("page2", page2);
         cards.put("history", historyPage);
@@ -47,14 +48,15 @@ public class MainPanel extends JPanel implements ClientHandler {
         setLayout(new BorderLayout());
         add(contentPanel, BorderLayout.CENTER);
 
-        showPage("page1"); // 默认显示第一个页面
+        showPage("page1"); //Display page1 by default
     }
 
+    //Show pages based on button actions in menuPanel of MainFrame
     public void showPage(String pageName) {
         cardLayout.show(contentPanel, pageName);
-
     }
     
+    //Update and pass client and locale information to next layer
     @Override
     public void setClient(Client client){
         this.client = client;

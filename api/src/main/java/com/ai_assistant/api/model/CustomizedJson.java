@@ -38,11 +38,13 @@ public class CustomizedJson {
     }
 
     public String CreateCustomJson(){
+        //Use Google Gson to create custom json payload
         Gson gson = new Gson();
 
         JsonObject input= new JsonObject();
         input.addProperty("model", model);
 
+        //Use JsonArray to add system content and user content
         JsonArray messagesArray = new JsonArray();
         JsonObject systemMessage = new JsonObject();
         systemMessage.addProperty("role", "system");

@@ -8,10 +8,10 @@ import java.util.Scanner;
 
 public class Client implements ConnectionHandler
 {
+    //Client ID is from the UID extracted from database upon authentication, passed to all classes for consistent functionality
     int clientID;
-    String password;
 
-    public Client(int clientID, String password){
+    public Client(int clientID){
         this.clientID = clientID;
     }
 
@@ -23,7 +23,8 @@ public class Client implements ConnectionHandler
     public void setUID(int UID){
         this.clientID = UID;
     }
-
+        
+    //Note: The following connection takes port and address of server
     @Override
     public String runConnection(int port, String address, Prompt passedInfo){
         StringBuilder sb = new StringBuilder();
@@ -38,7 +39,7 @@ public class Client implements ConnectionHandler
                 PrintWriter out = new PrintWriter(outStream,true);
                 System.out.println("Client Connected to Server. Passed question: " + passedInfo.toString());
                 out.println(passedInfo.toString());
-                out.println("END_OF_MESSAGE");
+                out.println("END_OF_MESSAGE");//Use EOF signal to stop the server from waiting
                 sb = new StringBuilder();
                 while (in.hasNextLine())
                 {       
@@ -57,21 +58,22 @@ public class Client implements ConnectionHandler
         }
         return sb.toString();
     }
+
+    //Test main
     public static void main(String [] args)
     {
-        Client c1 = new Client(0,null);
+        Client c1 = new Client(0);
 
-        //调试1:发送本地文件
+        //Debug 1: Work with file extractor class to extract content and path to form a prompt. Below are code:
         // FileExtractor file1 = new FileExtractor("/Users/huanfuli/CNIT325FinalProject/api/src/main/java/com/ai_assistant/api/model/Testcode.java");
         // String question = file1.getContent();
 
-        //调试2:发送简单问题
+        //Debug 2: Simple question (less process time for faster debugging)
         String question = "When was the USA founded?";
 
         Prompt prompt = new Prompt(0, 3, question, null); 
-        //Selection 0:Code suggestion || 1:Code solution || 3:General question
+        //Selection 0:Code Hint || 1:Code Suggestion || 2: Code Debug || 3:Generic
         
-        //Note: The following connection takes port and address of server
         String result = c1.runConnection(8189, "127.0.0.1", prompt);
         System.out.println(result);
     } //end public

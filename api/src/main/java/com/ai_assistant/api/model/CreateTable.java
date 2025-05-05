@@ -14,10 +14,9 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
         try {
             //Establish connection to database
             conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            System.out.println("Connected to database for table creation.");
+            System.out.println("<DATABASE> Connected to database for table creation.");
 
             if (conn != null) {
-                System.out.println("Connected to database.");
                 statement = conn.createStatement();
 
                 String createTableSQL = "CREATE TABLE IF NOT EXISTS HISTORY (" +
@@ -29,7 +28,7 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
                                         "TIME_STAMP DATETIME" +
                                         ")";
                 statement.executeUpdate(createTableSQL);
-                System.out.println("HISTORY table created or already exists.");
+                System.out.println("<DATABASE> HISTORY table created or already exists.");
 
                 String createTableSQL2 = "CREATE TABLE IF NOT EXISTS USER (" +
                                         "UID INT AUTO_INCREMENT PRIMARY KEY," +
@@ -37,10 +36,10 @@ public class CreateTable extends DatabaseConnection implements DatabaseHandler{
                                         "PASSWORD VARCHAR(20) NOT NULL" +
                                         ")";
                 statement.executeUpdate(createTableSQL2);
-                System.out.println("USER table created or already exists.");
+                System.out.println("<DATABASE> USER table created or already exists.");
             }
         } catch (SQLException e) {
-            System.err.println("Error: Cannot create table: " + e.getMessage());
+            System.err.println("<DATABASE> Error: Cannot create table: " + e.getMessage());
         } finally {
             DatabaseConnection.closeResources(conn, statement, null);
         }

@@ -81,7 +81,7 @@ public class LoginPage extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Login logics
-                System.out.println("Login attempted: " + emailField.getText() + ", " + new String(passwordField.getPassword()));
+                System.out.println("<CLIENT> Login attempted: " + emailField.getText() + ", " + new String(passwordField.getPassword()));
                 String email = emailField.getText();
                 String password = new String(passwordField.getPassword()).trim();
 
@@ -99,7 +99,7 @@ public class LoginPage extends JPanel {
                                 // Authentication successful
                                 int UID = rs.getInt("UID");
                                 System.out.println(UID);
-                                Client client = new Client(UID, new String(passwordField.getPassword()));
+                                Client client = new Client(UID);
                                 mainFrame.setClient(client);
                                 mainFrame.setLocale(language, country);
                                 mainFrame.showCard("main");

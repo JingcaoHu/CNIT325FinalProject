@@ -46,7 +46,7 @@ public class HistoryPage extends JPanel implements ClientHandler {
     private String[] columnNames;
 
     public HistoryPage(MainPanel panel) {
-        currentLocale = new Locale("en", "US");
+        currentLocale = new Locale("en", "US"); //Default Locale
         bundle = ResourceBundle.getBundle("LocaleBundle", currentLocale);
         columnNames = new String[]{bundle.getString("colNameInput"), bundle.getString("colNameOutput"),
                                 bundle.getString("colNameSelection"), bundle.getString("colNameTime")};;
@@ -70,13 +70,13 @@ public class HistoryPage extends JPanel implements ClientHandler {
         JScrollPane scrollPane = new JScrollPane(historyTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // 注意：初始化时不加载数据，等待 client 被设置
+        //NOTE: Does not load any data upon initialization. Wait for client to be set.
 
-        // 监听功能筛选下拉框的事件
+        //Monitor filter dropdown list actions to load table.
         functionFilterComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 只有当 client 不为 null 时才加载数据
+                //Only load data if client is not null
                 if (client != null) {
                     int selectedFunction = functionFilterComboBox.getSelectedIndex();
                     loadHistoryData(selectedFunction);
@@ -84,7 +84,7 @@ public class HistoryPage extends JPanel implements ClientHandler {
             }
         });
 
-        // 双击表格行事件
+        //Monitor double click actions on table rows
         historyTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -94,15 +94,15 @@ public class HistoryPage extends JPanel implements ClientHandler {
                         String input = (String) tableModel.getValueAt(row, 0);
                         String output = (String) tableModel.getValueAt(row, 1);
                         String selection = (String) tableModel.getValueAt(row, 2);
-                        System.out.println("Client Debug: 双击事件启动");
+                        System.out.println("<CLIENT> Double clicked.");
                         showHistoryDetail(input, output, getSelectionIndex(selection));
                     }
                 }
             }
         });
-
     }
 
+    //Helper function used to extract selection index for re-send functionality
     private int getSelectionIndex(String selectionStr){
         switch (selectionStr) {
             case "Hint":
@@ -120,17 +120,17 @@ public class HistoryPage extends JPanel implements ClientHandler {
 
     private void loadHistoryData(int function) {
         if (client == null) {
-            System.err.println("Waiting for Client setup, cannot show history.");
-            tableModel.setRowCount(0); // 清空表格
+            System.err.println("<CLIENT> Waiting for Client setup, cannot show history.");
+            tableModel.setRowCount(0); //Empty the table
             return;
         }
 
         try {
             int functionIndex = getFunctionIndex(function);
             ResultSet rs = recordRetriever.getTable(client.getUID(), functionIndex);
-            // 清空现有数据
+            //Empty the current data in the table
             tableModel.setRowCount(0);
-            // 填充表格数据
+            //Update the table with new data
             while (rs.next()) {
                 String selection = rs.getString("SELECTION");
                 String content = rs.getString("CONTENT");
@@ -145,6 +145,8 @@ public class HistoryPage extends JPanel implements ClientHandler {
         }
     }
 
+    //Reversed method of getSelection. This helps database lookup.
+    //Sequence is changed to make the interaction more intuitive ("All" placed at first).
     private int getFunctionIndex(int function) {
         switch (function) {
             case 1:
@@ -156,13 +158,14 @@ public class HistoryPage extends JPanel implements ClientHandler {
             case 4:
                 return 3;
             case 0:
-                return 5;
+                return 5; //Set to all by default
             default: // "All"
-                return 5; // 对应 RecordRetriever 中表示所有功能的数值
+                return 5; //Set to all by default
         }
     }
 
     private void showHistoryDetail(String input, String output, int selectedFunction) {
+        //Use JDialog as new window for history detail
         JDialog detailDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), 
                                          bundle.getString("historyDetailTitle"), 
                                          true);
@@ -179,7 +182,7 @@ public class HistoryPage extends JPanel implements ClientHandler {
         JScrollPane inputScroll = new JScrollPane(inputTextArea);
         inputScroll.setBorder(BorderFactory.createTitledBorder(bundle.getString("inputBorder")));
         
-        JTextArea outputTextArea = new JTextArea(output.replace("\\n", "\n"));
+        JTextArea outputTextArea = new JTextArea(output.replace("\\n", "\n"));//Format response by replacing literal line separator
         outputTextArea.setEditable(false);
         outputTextArea.setLineWrap(true);
         outputTextArea.setWrapStyleWord(true);
@@ -214,7 +217,7 @@ public class HistoryPage extends JPanel implements ClientHandler {
     @Override
     public void setClient(Client client) {
         this.client = client;
-        // 当 Client 设置后，加载历史记录
+        //Load history data after the client is setup
         loadHistoryData(functionFilterComboBox.getSelectedIndex());
     }
 

@@ -79,10 +79,10 @@ public class RegisterPage extends JPanel {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 在这里添加注册逻辑，并进行密码校验
+                // Add registration logics here and add password authentication
                 if (new String(passwordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))) {
                     System.out.println("Attempting Register: " + emailField.getText() + ", " + new String(passwordField.getPassword()));
-                    // 假设注册成功后返回登录页面
+                    //Return to login page after authenticated
                     String email = emailField.getText();
                     String password = new String(passwordField.getPassword()).trim();
                     InsertUser newUser = new InsertUser(email, password);
@@ -105,7 +105,8 @@ public class RegisterPage extends JPanel {
         });
         add(backToLoginButton, gbc);
     }
-
+    
+    //Update locale in current page
     public void setLocale(String language, String country){
         locale = new Locale(language, country);
         bundle = ResourceBundle.getBundle("LocaleBundle", locale);

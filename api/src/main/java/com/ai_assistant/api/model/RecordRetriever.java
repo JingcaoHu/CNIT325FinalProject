@@ -13,34 +13,31 @@ public class RecordRetriever extends DatabaseConnection{
     int selectedFunction;
 
     public RecordRetriever(){
-
+        //No parameters needed, use default
     }
     
     public ResultSet getTable(int UID, int selectedFunction) {
-
         ResultSet resultSet = null;
-
         try {
             //Establish connection to database
             conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             
             if (conn != null) {
-                System.out.println("Connected to database.");
+                System.out.println("<DATABASE> Connected to database for record retrieval.");
                 statement = (Statement) conn.createStatement();
 
-                String createTableSQL = "SELECT * FROM HISTORY " +
-                                        "WHERE UID = " +  UID;
+                String getTableSQL = "SELECT * FROM HISTORY WHERE UID = " +  UID;
 
-                //Add SQL query constraint if selection filter is set
+                //Add SQL constraint if selection filter is set. Note: selection 5 is "All" in filter comboBox
                 if (selectedFunction != 5){
                     String function = DatabaseConnection.getSelection(selectedFunction);
-                    createTableSQL = createTableSQL + " AND SELECTION = '" + function + "'";
+                    getTableSQL = getTableSQL + " AND SELECTION = '" + function + "'";
                 }
 
                 //Add SQL query constraint if time filter is set
                 //To-do code here
 
-                resultSet = statement.executeQuery(createTableSQL);
+                resultSet = statement.executeQuery(getTableSQL);
 
                 return resultSet;
             }
@@ -51,15 +48,8 @@ public class RecordRetriever extends DatabaseConnection{
     
     //Test main
    public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-        // Class.forName("com.mysql.jdbc.Driver").newInstance(); // No need for this in modern JDBC
-        //  Prompt test = new Prompt(1, 1, null, null);
-        //  test.setTimeStamp("25-04-21 03:26:15");
-        //  CreateTable table = new CreateTable();
-        //  table.connectDatabase(test);
-
         RecordRetriever retriever = new RecordRetriever();
-        //  You'll need to replace 123 with an actual UID from your database.
-        ResultSet rs = retriever.getTable(123, 5); // 5 for all records, change as needed.
+        ResultSet rs = retriever.getTable(1, 5);
 
         try {
             if (rs != null) {
@@ -81,10 +71,10 @@ public class RecordRetriever extends DatabaseConnection{
                 }
                 rs.close();
             } else {
-                System.out.println("Result set is null.  Check your database connection and query.");
+                System.out.println("<DATABASE TEST> Result set is null.  Check your database connection and query.");
             }
         } catch (SQLException e) {
-            System.err.println("Error processing result set: " + e.getMessage());
+            System.err.println("<DATABASE TEST> Error processing result set: " + e.getMessage());
             e.printStackTrace();
         } finally {
             // Close resources in a finally block
@@ -96,7 +86,7 @@ public class RecordRetriever extends DatabaseConnection{
                     retriever.conn.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Error closing resources: " + e.getMessage());
+                System.err.println("<DATABASE TEST> Error closing resources: " + e.getMessage());
                 e.printStackTrace();
             }
         }

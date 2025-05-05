@@ -56,9 +56,10 @@ public class Prompt{
         this.timeStamp = timeStamp;
     }
 
+    //Overriden toString method for serialization, use the delimiter as "<DELIMITER>""
     @Override
     public String toString(){
         return UID + "<DELIMITER>" + selection + "<DELIMITER>" + content + "<DELIMITER>" + response + "<DELIMITER>" + timeStamp;
-        //Serialized formate: UID<DELIMITER>selection<DELIMITER>content<DELIMITER>response<DELIMITER>timeStamp
+        //Serialized format: UID<DELIMITER>selection<DELIMITER>content<DELIMITER>response<DELIMITER>timeStamp
     }
 }

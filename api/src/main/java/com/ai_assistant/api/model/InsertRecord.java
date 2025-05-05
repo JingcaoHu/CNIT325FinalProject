@@ -32,8 +32,9 @@ public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
             conn = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             
             if (conn != null) {
-                System.out.println("Connected to database.");
+                System.out.println("<DATABASE> Connected to database for record insertion.");
 
+                //Use prepared statment rather than normal statement to prevent SQL injection.
                 String insertRecordSQL = "INSERT INTO HISTORY (UID, SELECTION, CONTENT, RESPONSE, TIME_STAMP) " +
                                         "VALUES (?, ?, ?, ?, ?)";
                 statement = conn.prepareStatement(insertRecordSQL);
@@ -43,12 +44,11 @@ public class InsertRecord extends DatabaseConnection implements DatabaseHandler{
                 statement.setString(4, prompt.getResponse());
                 statement.setString(5, prompt.getTimeStamp());
 
-
+                //Integrity check based on rows affected in database
                 int rowsAffected = statement.executeUpdate();
-                System.out.println("SQL executed.");
-
+                System.out.println("<DATABASE> SQL executed.");
                 if (rowsAffected == 0){
-                    System.out.println("Error: Insertion failed.");
+                    System.out.println("<DATABASE> Error: Insertion failed.");
                 }
             }
         } catch (SQLException e) {

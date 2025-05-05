@@ -47,10 +47,9 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
         add(inputPanel, BorderLayout.NORTH);
 
         responseTextArea = new JTextArea(10, 50);
-        responseTextArea.setEditable(true);
-        //Set automatic line changing according to size of panel
-        responseTextArea.setLineWrap(true);
-        responseTextArea.setWrapStyleWord(true);
+        responseTextArea.setEditable(true); //Allow user to modify response before overwrite
+        responseTextArea.setLineWrap(true);//Set automatic line changing according to size of panel
+        responseTextArea.setWrapStyleWord(true);//Break the lines by word boundaries
         add(new JScrollPane(responseTextArea), BorderLayout.CENTER);
 
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -66,6 +65,7 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
         add(controlPanel, BorderLayout.SOUTH);
     }
 
+    //Update client and locale information
     @Override
     public void setClient(Client client) {
         this.client = client;
@@ -92,13 +92,12 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
             //Indexes of functions: 0. Hint 1. Suggestion 2. Debug 3. Generic
             int selectedFunction = functionComboBox.getSelectedIndex();
             Prompt prompt = new Prompt(client.getUID(), selectedFunction, question, null);
-            //Hard coded port, and address for test
+            //Hard coded port and address for test
             String response = client.runConnection(8189, "127.0.0.1", prompt);
-            System.out.println("Client Debug Page1 Received Response: " + response);
-            //Debug Message: 返回的消息在到此处时已经只有一半了
-            String formattedResponse = response.replace("\\n", "\n");
+            System.out.println("<CLIENT> Received Response. ");
+            String formattedResponse = response.replace("\\n", "\n");//Replace literal line separator with actual line separator for formatting
             responseTextArea.setText(formattedResponse);
-            System.out.println("Request completed.");
+            System.out.println("<CLIENT> Request completed.");
         } else if (e.getSource() == overwriteButton){
             String filePath = filePathField.getText();
             String lines = responseTextArea.getText();
@@ -106,7 +105,7 @@ public class Page1 extends JPanel implements ActionListener, ClientHandler{
             try (FileWriter writer = new FileWriter(filePath)){
                 writer.write(lines);
             } catch(IOException e1){
-                System.out.println("Error Message: " + e1.getMessage());
+                System.out.println("<CLIENT> Error Message: " + e1.getMessage());
                 e1.printStackTrace();
             }
         }

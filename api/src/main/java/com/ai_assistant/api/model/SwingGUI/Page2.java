@@ -39,6 +39,7 @@ public class Page2 extends JPanel implements ClientHandler {
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        //Use split pane to provide better view of information in GUI since it needs to show 2 pages at the same time
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
         inputTextArea = new JTextArea(10, 25);
@@ -50,7 +51,7 @@ public class Page2 extends JPanel implements ClientHandler {
         outputTextArea.setEditable(false);
         outputAreaBorder = BorderFactory.createTitledBorder(bundle.getString("outputBorder"));
         outputTextArea.setBorder(outputAreaBorder);
-        outputTextArea.setLineWrap(true);
+        outputTextArea.setLineWrap(true); //Set line break functionality
         outputTextArea.setWrapStyleWord(true);
         splitPane.setRightComponent(new JScrollPane(outputTextArea));
 
@@ -68,7 +69,7 @@ public class Page2 extends JPanel implements ClientHandler {
                 //Send request logics below
                 String output = client.runConnection(8189, "127.0.0.1", prompt);
                 //Parse the AI output to format line changes
-                String formattedResponse = output.replace("\\n", "\n");
+                String formattedResponse = output.replace("\\n", "\n");//Replace literal line separator with actual line separator for formatting
                 outputTextArea.setText(formattedResponse);
                 System.out.println("Client Debug: Request completed.");
             }
@@ -78,11 +79,11 @@ public class Page2 extends JPanel implements ClientHandler {
         add(controlPanel, BorderLayout.SOUTH);
     }
 
+    //Update client and locale information
     @Override
     public void setClient(Client client) {
         this.client = client;
     }
-
     @Override
     public void setLocale(String language, String country) {
         currentLocale = new Locale(language, country);
